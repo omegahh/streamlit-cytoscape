@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "st-cytoscape"
-version = "0.0.4"
+version = "1.0.0"
 description = "A Streamlit component to display a Cytoscape.js graph"
 readme = "README.md"
 license = {file = "LICENSE"}
@@ -28,7 +28,7 @@ classifiers = [
 keywords = ["streamlit", "cytoscape", "graph", "visualization", "network"]
 requires-python = ">=3.10"
 dependencies = [
-    "streamlit>=0.63"
+    "streamlit>=1.28.0"
 ]
 
 [project.urls]

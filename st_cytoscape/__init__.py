@@ -5,7 +5,8 @@ _RELEASE = True
 
 if not _RELEASE:
     _component_func = components.declare_component(
-        "st_cytoscape", url="http://localhost:3001",
+        "st_cytoscape",
+        url="http://localhost:3001",
     )
 else:
     parent_dir = os.path.dirname(os.path.abspath(__file__))
