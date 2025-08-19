@@ -1,0 +1,47 @@
+[build-system]
+requires = ["setuptools>=45", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "st-cytoscape"
+version = "0.0.4"
+description = "A Streamlit component to display a Cytoscape.js graph"
+readme = "README.md"
+license = {file = "LICENSE"}
+authors = [
+    {name = "st-cytoscape contributors"}
+]
+maintainers = [
+    {name = "st-cytoscape contributors"}
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Framework :: Streamlit",
+    "Topic :: Scientific/Engineering :: Visualization"
+]
+keywords = ["streamlit", "cytoscape", "graph", "visualization", "network"]
+requires-python = ">=3.10"
+dependencies = [
+    "streamlit>=0.63"
+]
+
+[project.urls]
+Homepage = "https://github.com/vivien000/st-cytoscape"
+Repository = "https://github.com/vivien000/st-cytoscape"
+Issues = "https://github.com/vivien000/st-cytoscape/issues"
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["st_cytoscape*"]
+
+[tool.setuptools.package-data]
+st_cytoscape = ["frontend/build/**/*"]
