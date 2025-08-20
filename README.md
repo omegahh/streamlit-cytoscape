@@ -9,6 +9,7 @@
 ![Screenshot](screenshot.gif)
 
 ✨ **Version 1.0.0 Features:**
+
 - 🚀 **Modern Stack**: Built with Cytoscape.js v3.33.1, React 18, TypeScript 5.7, and Vite
 - 🎨 **Theme Integration**: Automatic Streamlit theme adaptation
 - ⚡ **Performance**: Optimized builds with code splitting and tree shaking
@@ -83,16 +84,16 @@ if selected["edges"]:
 ## Usage
 
 **cytoscape (elements,
-    stylesheet,
-    width="100%",
-    height="300px",
-    layout={"name": "fcose", "animationDuration": 0},
-    selection_type="additive",
-    user_zooming_enabled=True,
-    user_panning_enabled=True,
-    min_zoom=1e-50,
-    max_zoom=1e50,
-    key=None
+stylesheet,
+width="100%",
+height="300px",
+layout={"name": "fcose", "animationDuration": 0},
+selection_type="additive",
+user_zooming_enabled=True,
+user_panning_enabled=True,
+min_zoom=1e-50,
+max_zoom=1e50,
+key=None
 )**
 
 Embeds a Cytoscape.js graph and returns a dictionary containing the list of the ids of selected nodes ("nodes" key) and the list of the ids of the selected edges ("edges" key)
@@ -100,7 +101,7 @@ Embeds a Cytoscape.js graph and returns a dictionary containing the list of the 
 ### Parameters
 
 - `elements` (list): the list of nodes and edges of the graph
-    (cf. https://js.cytoscape.org/#notation/elements-json)
+  (cf. https://js.cytoscape.org/#notation/elements-json)
 - `stylesheet` (list): the style used for the graph (cf. https://js.cytoscape.org/#style)
 - `width` (string): the CSS width attribute of the graph's container
 - `height` (string): the CSS height attribute of the graph's container
@@ -168,7 +169,7 @@ All standard [Cytoscape.js layouts](https://js.cytoscape.org/#layouts) are suppo
 # Grid layout
 layout = {"name": "grid", "rows": 2}
 
-# Circle layout  
+# Circle layout
 layout = {"name": "circle"}
 
 # Breadthfirst layout
@@ -196,6 +197,7 @@ The component automatically adapts to your Streamlit theme:
 ## Version History
 
 ### v1.0.0 (2024)
+
 - 🚀 Complete modernization with Cytoscape.js v3.33.1
 - ⚡ Vite build system for faster development
 - 🎯 TypeScript 5.7 with strict type checking
@@ -204,6 +206,7 @@ The component automatically adapts to your Streamlit theme:
 - 🔧 Modern React 18 patterns
 
 ### v0.0.4 (Legacy)
+
 - Legacy version for Python 3.6-3.9 compatibility
 - Cytoscape.js v3.20.0
 - Create React App build system

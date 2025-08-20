@@ -42,7 +42,7 @@ def cytoscape(
         The CSS height attribute of the graph's container
     layout: dict
         The layout options for the graph (cf. https://js.cytoscape.org/#layouts)
-    seletion_type: string ("single" or "additive")
+    selection_type: string ("single" or "additive")
         Cf. https://js.cytoscape.org/#core/initialisation
     user_zooming_enabled: boolean
         Cf. https://js.cytoscape.org/#core/initialisation
