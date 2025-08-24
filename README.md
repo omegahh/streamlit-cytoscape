@@ -8,13 +8,16 @@
 
 ![Screenshot](screenshot.gif)
 
-✨ **Version 1.0.0 Features:**
+✨ **Version 1.0.1 Features:**
 
-- 🚀 **Modern Stack**: Built with Cytoscape.js v3.33.1, React 18, TypeScript 5.7, and Vite
-- 🎨 **Theme Integration**: Automatic Streamlit theme adaptation
-- ⚡ **Performance**: Optimized builds with code splitting and tree shaking
-- 🔧 **Developer Experience**: Full TypeScript support and modern tooling
-- 📱 **Responsive**: Mobile-friendly and accessible
+- 🚀 **Modern Stack**: Built with Cytoscape.js v3.33.1, React 18.3.1, TypeScript 5.7.2, and Vite 6.0.7
+- ♿ **Accessibility**: WCAG 2.1 compliant with full keyboard navigation, ARIA support, and screen reader integration
+- 🎨 **Advanced Theme Integration**: Real-time Streamlit theme adaptation with dark/light mode support
+- ⚡ **Performance**: Optimized builds with manual code splitting, tree shaking, and ResizeObserver
+- 🔧 **Developer Experience**: Ultra-strict TypeScript, Vitest testing, and comprehensive error handling
+- 📱 **Responsive**: Mobile-friendly with automatic graph resizing and touch support
+- 🎯 **Memory Management**: Robust lifecycle management preventing memory leaks
+- 🔀 **Bidirectional Communication**: Enhanced selection synchronization with error recovery
 
 A more advanced example can be seen live [here](https://share.streamlit.io/vivien0000/causal-simulator/main/app.py) ([code](https://github.com/vivien000/causal-simulator)).
 
@@ -47,7 +50,7 @@ elements = [
     {"data": {"source": "Z", "target": "X", "id": "Z➞X"}},
 ]
 
-# Define visual styling
+# Define visual styling (theme colors automatically applied)
 stylesheet = [
     {
         "selector": "node",
@@ -56,7 +59,9 @@ stylesheet = [
             "width": 20,
             "height": 20,
             "background-color": "#0074D9",
-            "color": "white"
+            "color": "white",
+            "font-family": "inherit",  # Uses Streamlit theme font
+            "font-size": "12px"
         }
     },
     {
@@ -71,14 +76,31 @@ stylesheet = [
     },
 ]
 
-# Render the graph and capture selection
-selected = cytoscape(elements, stylesheet, key="graph")
+# Advanced layout configuration
+layout = {
+    "name": "fcose",
+    "animationDuration": 800,
+    "fit": True,
+    "padding": 30
+}
 
-# Display selected elements
+# Render the graph with accessibility and theme support
+selected = cytoscape(
+    elements, 
+    stylesheet, 
+    layout=layout,
+    height="400px",
+    key="graph"  # Stable key prevents unnecessary re-renders
+)
+
+# Display selected elements with enhanced feedback
 if selected["nodes"]:
-    st.success(f"Selected nodes: {', '.join(selected['nodes'])}")
+    st.success(f"✅ Selected {len(selected['nodes'])} node(s): {', '.join(selected['nodes'])}")
 if selected["edges"]:
-    st.info(f"Selected edges: {', '.join(selected['edges'])}")
+    st.info(f"🔗 Selected {len(selected['edges'])} edge(s): {', '.join(selected['edges'])}")
+
+# Accessibility info
+st.caption("💡 **Accessibility**: Use arrow keys to navigate, Enter/Space to select, Escape to clear selection")
 ```
 
 ## Usage
@@ -113,9 +135,11 @@ Embeds a Cytoscape.js graph and returns a dictionary containing the list of the 
 - `max_zoom` (float): cf. https://js.cytoscape.org/#core/initialisation
 - `key` (str or None): an optional key that uniquely identifies this component. If this is None, and the component's arguments are changed, the component will be re-mounted in the Streamlit frontend and lose its current state
 
-## Advanced Layouts
+## Advanced Features
 
-### fCoSE Layout (Force-directed)
+### 🚀 Advanced Layouts
+
+#### fCoSE Layout (Force-directed)
 
 `st-cytoscape` includes the powerful `fCoSE` layout engine ([cytoscape-fcose v2.2.0](https://github.com/iVis-at-Bilkent/cytoscape.js-fcose)) for sophisticated force-directed positioning with constraint support.
 
@@ -129,6 +153,10 @@ layout = {
     "animationDuration": 1000,
     "fit": True,
     "padding": 30,
+    "quality": "proof",  # "draft", "default", "proof"
+    "randomize": False,
+    "nodeRepulsion": 4500,
+    "idealEdgeLength": 50,
     # Alignment constraints
     "alignmentConstraint": {"horizontal": [["X", "Y"]]},
     # Relative positioning
@@ -141,7 +169,7 @@ layout = {
 selected = cytoscape(elements, stylesheet, layout=layout)
 ```
 
-### Klay Layout (Hierarchical)
+#### Klay Layout (Hierarchical)
 
 For hierarchical and directed graphs, use the `klay` layout ([cytoscape-klay v3.1.4](https://github.com/cytoscape/cytoscape.js-klay)):
 
@@ -149,52 +177,414 @@ For hierarchical and directed graphs, use the `klay` layout ([cytoscape-klay v3.
 # Basic hierarchical layout
 layout = {"name": "klay"}
 
-# Advanced klay with options
+# Advanced klay with comprehensive options
 layout = {
     "name": "klay",
     "direction": "DOWN",  # DOWN, UP, LEFT, RIGHT
     "spacing": 20,
+    "nodeLayering": "NETWORK_SIMPLEX",  # LONGEST_PATH, INTERACTIVE
+    "edgeRouting": "ORTHOGONAL",  # POLYLINE, SPLINES
+    "crossingMinimization": "LAYER_SWEEP",
+    "thoroughness": 7,
     "klay": {
         "spacing": 20,
-        "direction": "DOWN"
+        "direction": "DOWN",
+        "fixedAlignment": "BALANCED"
     }
 }
 ```
 
-### Native Cytoscape.js Layouts
+#### Native Cytoscape.js Layouts
 
 All standard [Cytoscape.js layouts](https://js.cytoscape.org/#layouts) are supported:
 
 ```python
 # Grid layout
-layout = {"name": "grid", "rows": 2}
+layout = {"name": "grid", "rows": 2, "cols": 3}
 
 # Circle layout
-layout = {"name": "circle"}
+layout = {"name": "circle", "radius": 100}
 
 # Breadthfirst layout
-layout = {"name": "breadthfirst", "directed": True}
+layout = {"name": "breadthfirst", "directed": True, "spacingFactor": 1.5}
+
+# Concentric layout
+layout = {"name": "concentric", "minNodeSpacing": 20}
 ```
 
-## Theme Integration
+### ♿ Accessibility Features
 
-The component automatically adapts to your Streamlit theme:
+Comprehensive WCAG 2.1 compliance with enterprise-level accessibility:
 
 ```python
-# The component will automatically use:
-# - st.get_option("theme.primaryColor") for selections
-# - st.get_option("theme.backgroundColor") for background
-# - st.get_option("theme.textColor") for labels
-# - st.get_option("theme.font") for typography
+# Accessibility is automatic - no configuration needed!
+# Features include:
+# - Full keyboard navigation (arrow keys, Enter, Escape, Home, End)
+# - Screen reader announcements for selections
+# - ARIA labels describing graph structure
+# - Focus management and visual focus indicators
+# - Semantic HTML structure with proper roles
+
+selected = cytoscape(elements, stylesheet, key="accessible_graph")
+
+# Component automatically announces:
+# "Selected 2 nodes: X, Y" (to screen readers)
+# "Interactive network graph with 3 nodes and 3 edges. Use arrow keys to navigate..."
 ```
 
-## Performance Tips
+**Keyboard Navigation:**
+- `Arrow Keys`: Navigate between elements
+- `Enter/Space`: Select/toggle element selection  
+- `Escape`: Clear all selections
+- `Home`: Select first element
+- `End`: Select last element
+- `Tab`: Focus graph container
 
-- **Use stable keys**: Provide a consistent `key` parameter to prevent unnecessary re-renders
-- **Optimize large graphs**: For >1000 nodes, consider pagination or filtering
-- **Layout caching**: Set `animationDuration: 0` for faster initial renders
+### 🎨 Advanced Theme Integration
+
+Deep integration with Streamlit's theming system:
+
+```python
+# Automatic theme adaptation (no code required)
+# The component automatically detects and applies:
+# - Primary colors for selections and hover states
+# - Background colors with dark/light mode support
+# - Text colors and font families from your theme
+# - Border colors and visual hierarchy
+
+# Theme integration works seamlessly:
+selected = cytoscape(elements, stylesheet, key="themed_graph")
+
+# Advanced theme customization through Streamlit config
+# Set in .streamlit/config.toml:
+# [theme]
+# primaryColor = "#FF6B6B"
+# backgroundColor = "#FFFFFF" 
+# secondaryBackgroundColor = "#F0F2F6"
+# textColor = "#262730"
+```
+
+### ⚡ Performance & Optimization
+
+Built for high-performance graph visualization:
+
+```python
+# Optimized for large graphs
+layout = {
+    "name": "fcose",
+    "animationDuration": 0,  # Faster initial render
+    "fit": True,
+    "quality": "draft"  # Faster layout for large graphs
+}
+
+# Performance-optimized rendering
+selected = cytoscape(
+    elements, 
+    stylesheet, 
+    layout=layout,
+    key="perf_graph",  # Stable key prevents re-mounting
+    user_zooming_enabled=True,
+    user_panning_enabled=True,
+    min_zoom=0.1,  # Allow zooming out for large graphs
+    max_zoom=10.0
+)
+
+# Component automatically includes:
+# - ResizeObserver for responsive behavior
+# - Debounced update calls
+# - Memory leak prevention
+# - Efficient DOM manipulation
+```
+
+### 🧪 Testing Infrastructure
+
+Modern testing setup with comprehensive coverage:
+
+```bash
+# Run tests
+cd st_cytoscape/frontend
+npm test              # Run all tests
+npm run test:ui       # Interactive test UI
+npm test -- --watch   # Watch mode
+npm test -- --coverage # Coverage report
+```
+
+**Testing Stack:**
+- **Vitest 2.1.8**: Lightning-fast test runner (Jest-compatible)
+- **React Testing Library 16.1.0**: Component testing best practices
+- **jsdom 25.0.1**: Browser environment simulation
+- **@testing-library/jest-dom 6.6.3**: Enhanced DOM assertions
+
+## 🛠️ Development Workflow
+
+### Setting Up Development Environment
+
+```bash
+# Clone and setup
+git clone https://github.com/vivien000/st-cytoscape.git
+cd st-cytoscape
+
+# Install Python dependencies
+pip install -e .
+
+# Setup frontend development
+cd st_cytoscape/frontend
+npm install
+
+# Start development servers
+npm run dev  # Frontend dev server (localhost:3001)
+
+# In another terminal, enable development mode
+# Edit st_cytoscape/__init__.py and set _RELEASE = False
+
+# Run your Streamlit app
+streamlit run your_app.py
+```
+
+### Frontend Development Cycle
+
+```bash
+cd st_cytoscape/frontend
+
+# Development with hot reload
+npm run dev
+
+# Type checking
+npm run build  # TypeScript compilation + Vite build
+
+# Testing
+npm test           # Run tests
+npm run test:ui    # Interactive test interface
+npm test -- --coverage  # Coverage report
+
+# Build for production
+npm run build      # Creates frontend/build/
+```
+
+### Building and Publishing
+
+```bash
+# Build Python package
+python -m build
+
+# Verify package contents
+tar -tzf dist/st-cytoscape-*.tar.gz
+
+# Local testing
+pip install dist/st_cytoscape-*.whl
+```
+
+## 💡 Best Practices & Troubleshooting
+
+### Performance Optimization
+
+```python
+# For large graphs (>1000 nodes)
+layout = {
+    \"name\": \"fcose\",
+    \"animationDuration\": 0,    # Skip animation for faster render
+    \"quality\": \"draft\",        # Faster layout calculation
+    \"sampleSize\": 25           # Reduce sample size for speed
+}
+
+# Use stable keys to prevent re-mounting
+selected = cytoscape(elements, stylesheet, key=\"stable_key_123\")
+
+# Optimize element structure
+elements = [
+    {\"data\": {\"id\": \"node1\"}},  # Minimal data structure
+    # Avoid deep nesting in data objects
+]
+```
+
+### Memory Management
+
+```python
+# Always use stable keys for components that update frequently
+import hashlib
+
+def generate_stable_key(elements):
+    \"\"\"Generate consistent key based on graph structure\"\"\"
+    key_data = str(sorted([e[\"data\"][\"id\"] for e in elements]))
+    return hashlib.md5(key_data.encode()).hexdigest()[:8]
+
+selected = cytoscape(elements, stylesheet, key=generate_stable_key(elements))
+```
+
+### Theme Customization
+
+```python
+# Override theme styles while maintaining integration
+custom_stylesheet = [
+    {
+        \"selector\": \"node\",
+        \"style\": {
+            \"background-color\": \"data(color)\",  # Data-driven colors
+            \"label\": \"data(label)\",
+            \"font-family\": \"inherit\",  # Inherits Streamlit theme font
+            \"color\": \"inherit\"       # Inherits Streamlit text color
+        }
+    }
+]
+
+# Theme colors are automatically applied for:
+# - Selected elements (primary color)
+# - Hover states (primary color with transparency)  
+# - Background (Streamlit background color)
+# - Text (Streamlit text color)
+```
+
+### Common Issues & Solutions
+
+**Issue**: Graph not updating when data changes
+```python
+# Solution: Use stable, unique keys
+selected = cytoscape(elements, stylesheet, key=f\"graph_{data_version}\")
+```
+
+**Issue**: Slow performance with large graphs
+```python
+# Solution: Optimize layout and disable animations
+layout = {\"name\": \"fcose\", \"animationDuration\": 0, \"quality\": \"draft\"}
+```
+
+**Issue**: Selection not working as expected
+```python
+# Solution: Check element structure and selection_type
+elements = [{\"data\": {\"id\": \"unique_id\"}}]  # Ensure unique IDs
+selected = cytoscape(elements, stylesheet, selection_type=\"additive\")  # or \"single\"
+```
+
+**Issue**: Accessibility concerns
+```python
+# Solution: Component is automatically accessible
+# Ensure your Streamlit app has proper heading structure:
+st.title(\"Network Analysis\")
+st.subheader(\"Interactive Graph\") 
+selected = cytoscape(elements, stylesheet, key=\"main_graph\")
+```
+
+## 🚀 Advanced Usage Examples
+
+### Dynamic Graph with Real-time Updates
+
+```python
+import streamlit as st
+from st_cytoscape import cytoscape
+import time
+
+# Simulate dynamic data
+if \"graph_data\" not in st.session_state:
+    st.session_state.graph_data = {\"nodes\": 3, \"edges\": 2}
+
+# Dynamic element generation
+def create_dynamic_elements(num_nodes, num_edges):
+    elements = []
+    
+    # Create nodes
+    for i in range(num_nodes):
+        elements.append({
+            \"data\": {
+                \"id\": f\"node_{i}\",
+                \"label\": f\"Node {i}\",
+                \"value\": i * 10  # Data-driven sizing
+            }
+        })
+    
+    # Create edges
+    for i in range(min(num_edges, num_nodes - 1)):
+        elements.append({
+            \"data\": {
+                \"id\": f\"edge_{i}\",
+                \"source\": f\"node_{i}\",
+                \"target\": f\"node_{i+1}\"
+            }
+        })
+    
+    return elements
+
+# Dynamic styling based on data
+stylesheet = [
+    {
+        \"selector\": \"node\",
+        \"style\": {
+            \"label\": \"data(label)\",
+            \"width\": \"mapData(value, 0, 100, 20, 60)\",
+            \"height\": \"mapData(value, 0, 100, 20, 60)\",
+            \"background-color\": \"#0074D9\",
+            \"color\": \"white\",
+            \"text-valign\": \"center\",
+            \"text-halign\": \"center\",
+            \"font-family\": \"inherit\"
+        }
+    }
+]
+
+# Controls
+col1, col2 = st.columns(2)
+with col1:
+    nodes = st.slider(\"Number of nodes\", 2, 10, st.session_state.graph_data[\"nodes\"])
+with col2:
+    edges = st.slider(\"Number of edges\", 1, nodes-1, min(st.session_state.graph_data[\"edges\"], nodes-1))
+
+st.session_state.graph_data = {\"nodes\": nodes, \"edges\": edges}
+
+# Generate stable key for consistent rendering
+graph_key = f\"dynamic_graph_{nodes}_{edges}\"
+elements = create_dynamic_elements(nodes, edges)
+
+# Render with advanced layout
+selected = cytoscape(
+    elements,
+    stylesheet,
+    layout={\"name\": \"fcose\", \"animationDuration\": 600, \"fit\": True},
+    height=\"500px\",
+    key=graph_key
+)
+
+# Enhanced selection feedback
+if selected[\"nodes\"] or selected[\"edges\"]:
+    st.success(f\"🎯 Selected: {len(selected['nodes'])} nodes, {len(selected['edges'])} edges\")
+```
+
+### Multi-Layout Comparison
+
+```python
+import streamlit as st
+from st_cytoscape import cytoscape
+
+# Sample network data
+elements = [
+    {\"data\": {\"id\": \"A\", \"label\": \"Node A\"}},
+    {\"data\": {\"id\": \"B\", \"label\": \"Node B\"}},
+    {\"data\": {\"id\": \"C\", \"label\": \"Node C\"}},
+    {\"data\": {\"id\": \"D\", \"label\": \"Node D\"}},
+    {\"data\": {\"source\": \"A\", \"target\": \"B\", \"id\": \"AB\"}},
+    {\"data\": {\"source\": \"B\", \"target\": \"C\", \"id\": \"BC\"}},
+    {\"data\": {\"source\": \"C\", \"target\": \"D\", \"id\": \"CD\"}},
+    {\"data\": {\"source\": \"D\", \"target\": \"A\", \"id\": \"DA\"}},
+]
+
+# Layout options
+layouts = {
+    \"Force-directed (fCoSE)\": {\"name\": \"fcose\", \"animationDuration\": 800},
+    \"Hierarchical (Klay)\": {\"name\": \"klay\", \"direction\": \"DOWN\"},
+    \"Grid\": {\"name\": \"grid\", \"rows\": 2},
+    \"Circle\": {\"name\": \"circle\"},
+    \"Breadthfirst\": {\"name\": \"breadthfirst\", \"directed\": True}\n}\n\nlayout_choice = st.selectbox(\"Choose Layout Algorithm\", list(layouts.keys()))\n\n# Render with selected layout\nselected = cytoscape(\n    elements, \n    stylesheet=[{\"selector\": \"node\", \"style\": {\"label\": \"data(label)\"}}],\n    layout=layouts[layout_choice],\n    height=\"400px\",\n    key=f\"layout_demo_{layout_choice.replace(' ', '_')}\"\n)\n\nst.info(f\"💡 **{layout_choice}** layout selected. Try different layouts to see how they affect node positioning!\")\n```\n\n### Interactive Network Analysis\n\n```python\nimport streamlit as st\nfrom st_cytoscape import cytoscape\nimport pandas as pd\n\n# Sample network analysis data\nnetwork_data = {\n    \"nodes\": [\n        {\"id\": \"user1\", \"type\": \"user\", \"influence\": 85},\n        {\"id\": \"user2\", \"type\": \"user\", \"influence\": 62},\n        {\"id\": \"user3\", \"type\": \"admin\", \"influence\": 95},\n        {\"id\": \"content1\", \"type\": \"content\", \"engagement\": 120},\n        {\"id\": \"content2\", \"type\": \"content\", \"engagement\": 89},\n    ],\n    \"edges\": [\n        {\"source\": \"user1\", \"target\": \"content1\", \"interaction\": \"like\", \"weight\": 3},\n        {\"source\": \"user2\", \"target\": \"content1\", \"interaction\": \"share\", \"weight\": 5},\n        {\"source\": \"user3\", \"target\": \"content2\", \"interaction\": \"comment\", \"weight\": 4},\n    ]\n}\n\n# Convert to Cytoscape format\nelements = []\nfor node in network_data[\"nodes\"]:\n    elements.append({\"data\": node})\nfor edge in network_data[\"edges\"]:\n    elements.append({\"data\": {\"source\": edge[\"source\"], \"target\": edge[\"target\"], **edge}})\n\n# Advanced styling with data-driven visuals\nstylesheet = [\n    {\n        \"selector\": \"node[type='user']\",\n        \"style\": {\n            \"background-color\": \"#3498db\",\n            \"label\": \"data(id)\",\n            \"width\": \"mapData(influence, 0, 100, 30, 60)\",\n            \"height\": \"mapData(influence, 0, 100, 30, 60)\",\n            \"shape\": \"ellipse\"\n        }\n    },\n    {\n        \"selector\": \"node[type='admin']\",\n        \"style\": {\n            \"background-color\": \"#e74c3c\",\n            \"label\": \"data(id)\",\n            \"width\": \"mapData(influence, 0, 100, 30, 60)\",\n            \"height\": \"mapData(influence, 0, 100, 30, 60)\",\n            \"shape\": \"diamond\"\n        }\n    },\n    {\n        \"selector\": \"node[type='content']\",\n        \"style\": {\n            \"background-color\": \"#2ecc71\",\n            \"label\": \"data(id)\",\n            \"width\": \"mapData(engagement, 0, 150, 25, 50)\",\n            \"height\": \"mapData(engagement, 0, 150, 25, 50)\",\n            \"shape\": \"rectangle\"\n        }\n    },\n    {\n        \"selector\": \"edge\",\n        \"style\": {\n            \"width\": \"mapData(weight, 1, 5, 2, 8)\",\n            \"line-color\": \"#95a5a6\",\n            \"target-arrow-color\": \"#95a5a6\",\n            \"target-arrow-shape\": \"triangle\",\n            \"curve-style\": \"bezier\",\n            \"label\": \"data(interaction)\",\n            \"font-size\": \"10px\",\n            \"text-rotation\": \"autorotate\"\n        }\n    }\n]\n\n# Interactive analysis\nst.title(\"\ud83d\udd0d Network Analysis Dashboard\")\nst.markdown(\"**Instructions**: Click nodes to analyze connections. Use keyboard navigation for accessibility.\")\n\nselected = cytoscape(\n    elements,\n    stylesheet,\n    layout={\"name\": \"fcose\", \"animationDuration\": 1000, \"nodeRepulsion\": 8000},\n    height=\"600px\",\n    selection_type=\"additive\",\n    key=\"network_analysis\"\n)\n\n# Analysis results\nif selected[\"nodes\"]:\n    selected_data = [node for node in network_data[\"nodes\"] if node[\"id\"] in selected[\"nodes\"]]\n    df = pd.DataFrame(selected_data)\n    \n    st.subheader(\"\ud83c\udfa1 Selected Node Analysis\")\n    st.dataframe(df, use_container_width=True)\n    \n    # Calculate metrics\n    if \"influence\" in df.columns:\n        avg_influence = df[\"influence\"].mean()\n        st.metric(\"Average Influence\", f\"{avg_influence:.1f}\")\n    \n    if \"engagement\" in df.columns:\n        avg_engagement = df[\"engagement\"].mean()\n        st.metric(\"Average Engagement\", f\"{avg_engagement:.1f}\")\n\nif selected[\"edges\"]:\n    selected_edges = [edge for edge in network_data[\"edges\"] \n                     if f\"{edge['source']}{edge['target']}\" in selected[\"edges\"] or \n                        f\"{edge['source']}\u279e{edge['target']}\" in selected[\"edges\"]]\n    \n    if selected_edges:\n        st.subheader(\"\ud83d\udd17 Selected Connection Analysis\")\n        edge_df = pd.DataFrame(selected_edges)\n        st.dataframe(edge_df, use_container_width=True)\n```
 
 ## Version History
+
+### v1.0.1 (2024)
+
+- ♿ **Accessibility**: WCAG 2.1 compliance with full keyboard navigation and screen reader support
+- 🎨 **Advanced Theme Integration**: Real-time dark/light mode adaptation with enhanced styling
+- ⚡ **Performance**: ResizeObserver, debounced updates, and comprehensive memory management
+- 🔧 **Developer Experience**: Ultra-strict TypeScript 5.7.2 with advanced compiler options
+- 🧪 **Testing**: Modern Vitest 2.1.8 setup with React Testing Library 16.1.0
+- 🚀 **Build System**: Vite 6.0.7 with manual code splitting and tree shaking
+- 🎯 **Type Safety**: Comprehensive TypeScript definitions for all extensions
+- 📱 **Responsive**: Automatic graph resizing with ResizeObserver API
 
 ### v1.0.0 (2024)
 
