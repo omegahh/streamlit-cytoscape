@@ -27,12 +27,24 @@ A more advanced example can be seen live [here](https://share.streamlit.io/vivie
 pip install st-cytoscape
 ```
 
+**That's it!** No additional setup required. The package includes pre-built frontend assets.
+
 ### Requirements
 
 - **Python**: 3.10 or higher
 - **Streamlit**: 1.28.0 or higher
 
 > **Note**: This package has been modernized for current Python and Streamlit versions. For legacy Python versions (3.6-3.9), please use st-cytoscape v0.0.4.
+
+### Quick Verification
+
+```bash
+# Verify installation
+python -c "from st_cytoscape import cytoscape; print('✅ st-cytoscape installed successfully!')"
+
+# Run the quickstart example
+streamlit run your_app.py
+```
 
 ## Quickstart
 
@@ -315,41 +327,54 @@ npm test -- --coverage # Coverage report
 - **jsdom 25.0.1**: Browser environment simulation
 - **@testing-library/jest-dom 6.6.3**: Enhanced DOM assertions
 
-## 🛠️ Development Workflow
+## 🛠️ Contributing to st-cytoscape
 
-### Setting Up Development Environment
+> **For End Users**: Skip this section! You only need `pip install st-cytoscape`. 
+> 
+> **For Contributors**: This section explains how to modify and build the component.
+
+### Development Environment Setup
 
 ```bash
-# Clone and setup
-git clone https://github.com/vivien000/st-cytoscape.git
+# 1. Fork and clone the repository
+git clone https://github.com/YOUR-USERNAME/st-cytoscape.git
 cd st-cytoscape
 
-# Install Python dependencies
+# 2. Install Python package in development mode
 pip install -e .
 
-# Setup frontend development
+# 3. Setup frontend development (for component modification)
 cd st_cytoscape/frontend
 npm install
 
-# Start development servers
-npm run dev  # Frontend dev server (localhost:3001)
+# 4. Enable development mode
+# Edit st_cytoscape/__init__.py and change:
+# _RELEASE = True  →  _RELEASE = False
 
-# In another terminal, enable development mode
-# Edit st_cytoscape/__init__.py and set _RELEASE = False
+# 5. Start frontend development server
+npm run dev  # Serves on localhost:3001 with hot reload
 
-# Run your Streamlit app
-streamlit run your_app.py
+# 6. In another terminal, test with Streamlit
+cd ../..  # Back to project root
+streamlit run examples/your_test_app.py
 ```
 
-### Frontend Development Cycle
+### Why Development Mode?
+
+The package works in two modes:
+- **Production Mode** (`_RELEASE = True`): Uses pre-built assets from `frontend/build/`
+- **Development Mode** (`_RELEASE = False`): Uses live development server for frontend changes
+
+### Frontend Development Cycle (Contributors Only)
 
 ```bash
+# Make sure you're in frontend directory
 cd st_cytoscape/frontend
 
-# Development with hot reload
+# Development with hot reload (after npm install)
 npm run dev
 
-# Type checking
+# Type checking and building
 npm run build  # TypeScript compilation + Vite build
 
 # Testing
@@ -357,20 +382,29 @@ npm test           # Run tests
 npm run test:ui    # Interactive test interface
 npm test -- --coverage  # Coverage report
 
-# Build for production
+# When done: Build for production and restore release mode
 npm run build      # Creates frontend/build/
+# Edit st_cytoscape/__init__.py: _RELEASE = False → _RELEASE = True
 ```
 
-### Building and Publishing
+### Building and Publishing (Maintainers Only)
 
 ```bash
-# Build Python package
+# 1. Ensure frontend is built
+cd st_cytoscape/frontend
+npm run build
+
+# 2. Ensure production mode
+# In st_cytoscape/__init__.py: _RELEASE = True
+
+# 3. Build Python package
+cd ../..  # Back to project root
 python -m build
 
-# Verify package contents
-tar -tzf dist/st-cytoscape-*.tar.gz
+# 4. Verify package contents include frontend/build/
+tar -tzf dist/st-cytoscape-*.tar.gz | grep "frontend/build"
 
-# Local testing
+# 5. Test locally before publishing
 pip install dist/st_cytoscape-*.whl
 ```
 
