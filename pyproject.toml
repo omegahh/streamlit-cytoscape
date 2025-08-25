@@ -9,10 +9,10 @@ description = "A Streamlit component to display a Cytoscape.js graph"
 readme = "README.md"
 license = "MIT"
 authors = [
-    {name = "streamlit-cytoscape contributors"}
+    {name = "Omega HH"}
 ]
 maintainers = [
-    {name = "streamlit-cytoscape contributors"}
+    {name = "Omega HH"}
 ]
 classifiers = [
     "Development Status :: 4 - Beta",
