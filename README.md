@@ -606,7 +606,7 @@ if selected["nodes"] or selected["edges"]:
 
 ### Multi-Layout Comparison
 
-````python
+```python
 import streamlit as st
 from streamlit_cytoscape import cytoscape
 
@@ -628,8 +628,8 @@ layouts = {
     "Hierarchical (Klay)": {"name": "klay", "direction": "DOWN"},
     "Grid": {"name": "grid", "rows": 2},
     "Circle": {"name": "circle"},
-    "Breadthfirst": {"name": "breadthfirst", "directed": True}
-    }
+    "Breadthfirst": {"name": "breadthfirst", "directed": True},
+}
 
 layout_choice = st.selectbox("Choose Layout Algorithm", list(layouts.keys()))
 
@@ -637,20 +637,23 @@ layout_choice = st.selectbox("Choose Layout Algorithm", list(layouts.keys()))
 selected = cytoscape(
     elements,
     stylesheet=[{"selector": "node", "style": {"label": "data(label)"}}],
-        layout=layouts[layout_choice],
-        height="400px",
-        key=f"layout_demo_{layout_choice.replace(' ', '_')}"
+    layout=layouts[layout_choice],
+    height="400px",
+    key=f"layout_demo_{layout_choice.replace(' ', '_')}",
 )
 
-st.info(f"💡 **{layout_choice}** layout selected. Try different layouts to see how they affect node positioning!")
+st.info(
+    f"💡 **{layout_choice}** layout selected. Try different layouts to see how they affect node positioning!"
+)
 ```
 
 ### Interactive Network Analysis
 
 ```python
-import streamlit as st
-from streamlit_cytoscape import cytoscape
 import pandas as pd
+import streamlit as st
+
+from streamlit_cytoscape import cytoscape
 
 # Sample network analysis data
 network_data = {
@@ -664,8 +667,13 @@ network_data = {
     "edges": [
         {"source": "user1", "target": "content1", "interaction": "like", "weight": 3},
         {"source": "user2", "target": "content1", "interaction": "share", "weight": 5},
-        {"source": "user3", "target": "content2", "interaction": "comment", "weight": 4},
-    ]
+        {
+            "source": "user3",
+            "target": "content2",
+            "interaction": "comment",
+            "weight": 4,
+        },
+    ],
 }
 
 # Convert to Cytoscape format
@@ -673,7 +681,9 @@ elements = []
 for node in network_data["nodes"]:
     elements.append({"data": node})
 for edge in network_data["edges"]:
-    elements.append({"data": {"source": edge["source"], "target": edge["target"], **edge}})
+    elements.append(
+        {"data": {"source": edge["source"], "target": edge["target"], **edge}}
+    )
 
 # Advanced styling with data-driven visuals
 stylesheet = [
@@ -684,8 +694,8 @@ stylesheet = [
             "label": "data(id)",
             "width": "mapData(influence, 0, 100, 30, 60)",
             "height": "mapData(influence, 0, 100, 30, 60)",
-            "shape": "ellipse"
-        }
+            "shape": "ellipse",
+        },
     },
     {
         "selector": "node[type='admin']",
@@ -694,8 +704,8 @@ stylesheet = [
             "label": "data(id)",
             "width": "mapData(influence, 0, 100, 30, 60)",
             "height": "mapData(influence, 0, 100, 30, 60)",
-            "shape": "diamond"
-        }
+            "shape": "diamond",
+        },
     },
     {
         "selector": "node[type='content']",
@@ -704,8 +714,8 @@ stylesheet = [
             "label": "data(id)",
             "width": "mapData(engagement, 0, 150, 25, 50)",
             "height": "mapData(engagement, 0, 150, 25, 50)",
-            "shape": "rectangle"
-        }
+            "shape": "rectangle",
+        },
     },
     {
         "selector": "edge",
@@ -717,14 +727,16 @@ stylesheet = [
             "curve-style": "bezier",
             "label": "data(interaction)",
             "font-size": "10px",
-            "text-rotation": "autorotate"
-        }
-    }
+            "text-rotation": "autorotate",
+        },
+    },
 ]
 
 # Interactive analysis
-st.title("\ud83d\udd0d Network Analysis Dashboard")
-st.markdown("**Instructions**: Click nodes to analyze connections. Use keyboard navigation for accessibility.")
+st.title("😀 Network Analysis Dashboard")
+st.markdown(
+    "**Instructions**: Click nodes to analyze connections. Use keyboard navigation for accessibility."
+)
 
 selected = cytoscape(
     elements,
@@ -732,15 +744,17 @@ selected = cytoscape(
     layout={"name": "fcose", "animationDuration": 1000, "nodeRepulsion": 8000},
     height="600px",
     selection_type="additive",
-    key="network_analysis"
+    key="network_analysis",
 )
 
 # Analysis results
 if selected["nodes"]:
-    selected_data = [node for node in network_data["nodes"] if node["id"] in selected["nodes"]]
+    selected_data = [
+        node for node in network_data["nodes"] if node["id"] in selected["nodes"]
+    ]
     df = pd.DataFrame(selected_data)
 
-    st.subheader("\ud83c\udfa1 Selected Node Analysis")
+    st.subheader("Selected Node Analysis")
     st.dataframe(df, use_container_width=True)
 
     # Calculate metrics
@@ -753,12 +767,15 @@ if selected["nodes"]:
         st.metric("Average Engagement", f"{avg_engagement:.1f}")
 
 if selected["edges"]:
-    selected_edges = [edge for edge in network_data["edges"]
-                     if f"{edge['source']}{edge['target']}" in selected["edges"] or
-                        f"{edge['source']}\u279e{edge['target']}" in selected["edges"]]
+    selected_edges = [
+        edge
+        for edge in network_data["edges"]
+        if f"{edge['source']}{edge['target']}" in selected["edges"]
+        or f"{edge['source']}→{edge['target']}" in selected["edges"]
+    ]
 
     if selected_edges:
-        st.subheader("\ud83d\udd17 Selected Connection Analysis")
+        st.subheader("Selected Connection Analysis")
         edge_df = pd.DataFrame(selected_edges)
         st.dataframe(edge_df, use_container_width=True)
 ```
@@ -802,4 +819,3 @@ if selected["edges"]:
 - Legacy version for Python 3.6-3.9 compatibility
 - Cytoscape.js v3.20.0
 - Create React App build system
-````
