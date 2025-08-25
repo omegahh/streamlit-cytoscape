@@ -8,11 +8,12 @@
 
 ![Screenshot](screenshot.gif)
 
-✨ **Version 1.0.1 Features:**
+✨ **Version 1.0.2 Features:**
 
 - 🚀 **Modern Stack**: Built with Cytoscape.js v3.33.1, React 18.3.1, TypeScript 5.7.2, and Vite 6.0.7
+- 🎮 **Interactive Control Panel**: Real-time layout switching, zoom controls, and view reset functionality
 - ♿ **Accessibility**: WCAG 2.1 compliant with full keyboard navigation, ARIA support, and screen reader integration
-- 🎨 **Advanced Theme Integration**: Real-time Streamlit theme adaptation with dark/light mode support
+- 🎨 **Advanced Theme Integration**: Real-time Streamlit theme adaptation with dark/light mode support for all UI elements
 - ⚡ **Performance**: Optimized builds with manual code splitting, tree shaking, and ResizeObserver
 - 🔧 **Developer Experience**: Ultra-strict TypeScript, Vitest testing, and comprehensive error handling
 - 📱 **Responsive**: Mobile-friendly with automatic graph resizing and touch support
@@ -111,7 +112,8 @@ if selected["nodes"]:
 if selected["edges"]:
     st.info(f"🔗 Selected {len(selected['edges'])} edge(s): {', '.join(selected['edges'])}")
 
-# Accessibility info
+# Interactive controls and accessibility info
+st.caption("🎮 **Interactive Controls**: Use the control panel (top-right) for layout switching and zoom controls")
 st.caption("💡 **Accessibility**: Use arrow keys to navigate, Enter/Space to select, Escape to clear selection")
 ```
 
@@ -418,18 +420,18 @@ pip install dist/st_cytoscape-*.whl
 ```python
 # For large graphs (>1000 nodes)
 layout = {
-    \"name\": \"fcose\",
-    \"animationDuration\": 0,    # Skip animation for faster render
-    \"quality\": \"draft\",        # Faster layout calculation
-    \"sampleSize\": 25           # Reduce sample size for speed
+    "name": "fcose",
+    "animationDuration": 0,    # Skip animation for faster render
+    "quality": "draft",        # Faster layout calculation
+    "sampleSize": 25           # Reduce sample size for speed
 }
 
 # Use stable keys to prevent re-mounting
-selected = cytoscape(elements, stylesheet, key=\"stable_key_123\")
+selected = cytoscape(elements, stylesheet, key="stable_key_123")
 
 # Optimize element structure
 elements = [
-    {\"data\": {\"id\": \"node1\"}},  # Minimal data structure
+    {"data": {"id": "node1"}},  # Minimal data structure
     # Avoid deep nesting in data objects
 ]
 ```
@@ -441,8 +443,8 @@ elements = [
 import hashlib
 
 def generate_stable_key(elements):
-    \"\"\"Generate consistent key based on graph structure\"\"\"
-    key_data = str(sorted([e[\"data\"][\"id\"] for e in elements]))
+    """Generate consistent key based on graph structure"""
+    key_data = str(sorted([e["data"]["id"] for e in elements]))
     return hashlib.md5(key_data.encode()).hexdigest()[:8]
 
 selected = cytoscape(elements, stylesheet, key=generate_stable_key(elements))
@@ -454,12 +456,12 @@ selected = cytoscape(elements, stylesheet, key=generate_stable_key(elements))
 # Override theme styles while maintaining integration
 custom_stylesheet = [
     {
-        \"selector\": \"node\",
-        \"style\": {
-            \"background-color\": \"data(color)\",  # Data-driven colors
-            \"label\": \"data(label)\",
-            \"font-family\": \"inherit\",  # Inherits Streamlit theme font
-            \"color\": \"inherit\"       # Inherits Streamlit text color
+        "selector": "node",
+        "style": {
+            "background-color": "data(color)",  # Data-driven colors
+            "label": "data(label)",
+            "font-family": "inherit",  # Inherits Streamlit theme font
+            "color": "inherit"       # Inherits Streamlit text color
         }
     }
 ]
@@ -473,7 +475,7 @@ custom_stylesheet = [
 
 ### Common Issues & Solutions
 
-**Issue**: Component loading error: \"Your app is having trouble loading the st_cytoscape.st_cytoscape component\"
+**Issue**: Component loading error: "Your app is having trouble loading the st_cytoscape.st_cytoscape component"
 
 ```bash
 # Solution: Ensure proper build structure (for developers/contributors)
@@ -486,30 +488,31 @@ npm run build
 
 ```python
 # Solution: Use stable, unique keys
-selected = cytoscape(elements, stylesheet, key=f\"graph_{data_version}\")
+selected = cytoscape(elements, stylesheet, key=f"graph_{data_version}")
 ```
 
 **Issue**: Slow performance with large graphs
 
 ```python
 # Solution: Optimize layout and disable animations
-layout = {\"name\": \"fcose\", \"animationDuration\": 0, \"quality\": \"draft\"}
+layout = {"name": "fcose", "animationDuration": 0, "quality": "draft"}
 ```
 
 **Issue**: Selection not working as expected
 
 ```python
 # Solution: Check element structure and selection_type
-elements = [{\"data\": {\"id\": \"unique_id\"}}]  # Ensure unique IDs
-selected = cytoscape(elements, stylesheet, selection_type=\"additive\")  # or \"single\"
+elements = [{"data": {"id": "unique_id"}}]  # Ensure unique IDs
+selected = cytoscape(elements, stylesheet, selection_type="additive")  # or "single"
 ```
 
-**Issue**: Control panel not responding
+**Issue**: Interactive control panel not visible or responding
 
 ```python
-# Solution: The component automatically includes interactive controls
+# Solution: The component automatically includes interactive controls in the top-right
 # Ensure you're not overriding the key parameter too frequently:
-selected = cytoscape(elements, stylesheet, key=\"stable_graph_key\")
+selected = cytoscape(elements, stylesheet, key="stable_graph_key")
+# Control panel includes: Layout switching, Zoom in/out, Fit view, Reset view
 ```
 
 **Issue**: Accessibility concerns
@@ -517,9 +520,9 @@ selected = cytoscape(elements, stylesheet, key=\"stable_graph_key\")
 ```python
 # Solution: Component is automatically accessible
 # Ensure your Streamlit app has proper heading structure:
-st.title(\"Network Analysis\")
-st.subheader(\"Interactive Graph\")
-selected = cytoscape(elements, stylesheet, key=\"main_graph\")
+st.title("Network Analysis")
+st.subheader("Interactive Graph")
+selected = cytoscape(elements, stylesheet, key="main_graph")
 ```
 
 ## 🚀 Advanced Usage Examples
@@ -532,8 +535,8 @@ from st_cytoscape import cytoscape
 import time
 
 # Simulate dynamic data
-if \"graph_data\" not in st.session_state:
-    st.session_state.graph_data = {\"nodes\": 3, \"edges\": 2}
+if "graph_data" not in st.session_state:
+    st.session_state.graph_data = {"nodes": 3, "edges": 2}
 
 # Dynamic element generation
 def create_dynamic_elements(num_nodes, num_edges):
@@ -542,20 +545,20 @@ def create_dynamic_elements(num_nodes, num_edges):
     # Create nodes
     for i in range(num_nodes):
         elements.append({
-            \"data\": {
-                \"id\": f\"node_{i}\",
-                \"label\": f\"Node {i}\",
-                \"value\": i * 10  # Data-driven sizing
+            "data": {
+                "id": f"node_{i}",
+                "label": f"Node {i}",
+                "value": i * 10  # Data-driven sizing
             }
         })
 
     # Create edges
     for i in range(min(num_edges, num_nodes - 1)):
         elements.append({
-            \"data\": {
-                \"id\": f\"edge_{i}\",
-                \"source\": f\"node_{i}\",
-                \"target\": f\"node_{i+1}\"
+            "data": {
+                "id": f"edge_{i}",
+                "source": f"node_{i}",
+                "target": f"node_{i+1}"
             }
         })
 
@@ -564,16 +567,16 @@ def create_dynamic_elements(num_nodes, num_edges):
 # Dynamic styling based on data
 stylesheet = [
     {
-        \"selector\": \"node\",
-        \"style\": {
-            \"label\": \"data(label)\",
-            \"width\": \"mapData(value, 0, 100, 20, 60)\",
-            \"height\": \"mapData(value, 0, 100, 20, 60)\",
-            \"background-color\": \"#0074D9\",
-            \"color\": \"white\",
-            \"text-valign\": \"center\",
-            \"text-halign\": \"center\",
-            \"font-family\": \"inherit\"
+        "selector": "node",
+        "style": {
+            "label": "data(label)",
+            "width": "mapData(value, 0, 100, 20, 60)",
+            "height": "mapData(value, 0, 100, 20, 60)",
+            "background-color": "#0074D9",
+            "color": "white",
+            "text-valign": "center",
+            "text-halign": "center",
+            "font-family": "inherit"
         }
     }
 ]
@@ -581,28 +584,28 @@ stylesheet = [
 # Controls
 col1, col2 = st.columns(2)
 with col1:
-    nodes = st.slider(\"Number of nodes\", 2, 10, st.session_state.graph_data[\"nodes\"])
+    nodes = st.slider("Number of nodes", 2, 10, st.session_state.graph_data["nodes"])
 with col2:
-    edges = st.slider(\"Number of edges\", 1, nodes-1, min(st.session_state.graph_data[\"edges\"], nodes-1))
+    edges = st.slider("Number of edges", 1, nodes-1, min(st.session_state.graph_data["edges"], nodes-1))
 
-st.session_state.graph_data = {\"nodes\": nodes, \"edges\": edges}
+st.session_state.graph_data = {"nodes": nodes, "edges": edges}
 
 # Generate stable key for consistent rendering
-graph_key = f\"dynamic_graph_{nodes}_{edges}\"
+graph_key = f"dynamic_graph_{nodes}_{edges}"
 elements = create_dynamic_elements(nodes, edges)
 
 # Render with advanced layout
 selected = cytoscape(
     elements,
     stylesheet,
-    layout={\"name\": \"fcose\", \"animationDuration\": 600, \"fit\": True},
-    height=\"500px\",
+    layout={"name": "fcose", "animationDuration": 600, "fit": True},
+    height="500px",
     key=graph_key
 )
 
 # Enhanced selection feedback
-if selected[\"nodes\"] or selected[\"edges\"]:
-    st.success(f\"🎯 Selected: {len(selected['nodes'])} nodes, {len(selected['edges'])} edges\")
+if selected["nodes"] or selected["edges"]:
+    st.success(f"🎯 Selected: {len(selected['nodes'])} nodes, {len(selected['edges'])} edges")
 ```
 
 ### Multi-Layout Comparison
@@ -613,25 +616,170 @@ from st_cytoscape import cytoscape
 
 # Sample network data
 elements = [
-    {\"data\": {\"id\": \"A\", \"label\": \"Node A\"}},
-    {\"data\": {\"id\": \"B\", \"label\": \"Node B\"}},
-    {\"data\": {\"id\": \"C\", \"label\": \"Node C\"}},
-    {\"data\": {\"id\": \"D\", \"label\": \"Node D\"}},
-    {\"data\": {\"source\": \"A\", \"target\": \"B\", \"id\": \"AB\"}},
-    {\"data\": {\"source\": \"B\", \"target\": \"C\", \"id\": \"BC\"}},
-    {\"data\": {\"source\": \"C\", \"target\": \"D\", \"id\": \"CD\"}},
-    {\"data\": {\"source\": \"D\", \"target\": \"A\", \"id\": \"DA\"}},
+    {"data": {"id": "A", "label": "Node A"}},
+    {"data": {"id": "B", "label": "Node B"}},
+    {"data": {"id": "C", "label": "Node C"}},
+    {"data": {"id": "D", "label": "Node D"}},
+    {"data": {"source": "A", "target": "B", "id": "AB"}},
+    {"data": {"source": "B", "target": "C", "id": "BC"}},
+    {"data": {"source": "C", "target": "D", "id": "CD"}},
+    {"data": {"source": "D", "target": "A", "id": "DA"}},
 ]
 
 # Layout options
 layouts = {
-    \"Force-directed (fCoSE)\": {\"name\": \"fcose\", \"animationDuration\": 800},
-    \"Hierarchical (Klay)\": {\"name\": \"klay\", \"direction\": \"DOWN\"},
-    \"Grid\": {\"name\": \"grid\", \"rows\": 2},
-    \"Circle\": {\"name\": \"circle\"},
-    \"Breadthfirst\": {\"name\": \"breadthfirst\", \"directed\": True}\n}\n\nlayout_choice = st.selectbox(\"Choose Layout Algorithm\", list(layouts.keys()))\n\n# Render with selected layout\nselected = cytoscape(\n    elements, \n    stylesheet=[{\"selector\": \"node\", \"style\": {\"label\": \"data(label)\"}}],\n    layout=layouts[layout_choice],\n    height=\"400px\",\n    key=f\"layout_demo_{layout_choice.replace(' ', '_')}\"\n)\n\nst.info(f\"💡 **{layout_choice}** layout selected. Try different layouts to see how they affect node positioning!\")\n```\n\n### Interactive Network Analysis\n\n```python\nimport streamlit as st\nfrom st_cytoscape import cytoscape\nimport pandas as pd\n\n# Sample network analysis data\nnetwork_data = {\n    \"nodes\": [\n        {\"id\": \"user1\", \"type\": \"user\", \"influence\": 85},\n        {\"id\": \"user2\", \"type\": \"user\", \"influence\": 62},\n        {\"id\": \"user3\", \"type\": \"admin\", \"influence\": 95},\n        {\"id\": \"content1\", \"type\": \"content\", \"engagement\": 120},\n        {\"id\": \"content2\", \"type\": \"content\", \"engagement\": 89},\n    ],\n    \"edges\": [\n        {\"source\": \"user1\", \"target\": \"content1\", \"interaction\": \"like\", \"weight\": 3},\n        {\"source\": \"user2\", \"target\": \"content1\", \"interaction\": \"share\", \"weight\": 5},\n        {\"source\": \"user3\", \"target\": \"content2\", \"interaction\": \"comment\", \"weight\": 4},\n    ]\n}\n\n# Convert to Cytoscape format\nelements = []\nfor node in network_data[\"nodes\"]:\n    elements.append({\"data\": node})\nfor edge in network_data[\"edges\"]:\n    elements.append({\"data\": {\"source\": edge[\"source\"], \"target\": edge[\"target\"], **edge}})\n\n# Advanced styling with data-driven visuals\nstylesheet = [\n    {\n        \"selector\": \"node[type='user']\",\n        \"style\": {\n            \"background-color\": \"#3498db\",\n            \"label\": \"data(id)\",\n            \"width\": \"mapData(influence, 0, 100, 30, 60)\",\n            \"height\": \"mapData(influence, 0, 100, 30, 60)\",\n            \"shape\": \"ellipse\"\n        }\n    },\n    {\n        \"selector\": \"node[type='admin']\",\n        \"style\": {\n            \"background-color\": \"#e74c3c\",\n            \"label\": \"data(id)\",\n            \"width\": \"mapData(influence, 0, 100, 30, 60)\",\n            \"height\": \"mapData(influence, 0, 100, 30, 60)\",\n            \"shape\": \"diamond\"\n        }\n    },\n    {\n        \"selector\": \"node[type='content']\",\n        \"style\": {\n            \"background-color\": \"#2ecc71\",\n            \"label\": \"data(id)\",\n            \"width\": \"mapData(engagement, 0, 150, 25, 50)\",\n            \"height\": \"mapData(engagement, 0, 150, 25, 50)\",\n            \"shape\": \"rectangle\"\n        }\n    },\n    {\n        \"selector\": \"edge\",\n        \"style\": {\n            \"width\": \"mapData(weight, 1, 5, 2, 8)\",\n            \"line-color\": \"#95a5a6\",\n            \"target-arrow-color\": \"#95a5a6\",\n            \"target-arrow-shape\": \"triangle\",\n            \"curve-style\": \"bezier\",\n            \"label\": \"data(interaction)\",\n            \"font-size\": \"10px\",\n            \"text-rotation\": \"autorotate\"\n        }\n    }\n]\n\n# Interactive analysis\nst.title(\"\ud83d\udd0d Network Analysis Dashboard\")\nst.markdown(\"**Instructions**: Click nodes to analyze connections. Use keyboard navigation for accessibility.\")\n\nselected = cytoscape(\n    elements,\n    stylesheet,\n    layout={\"name\": \"fcose\", \"animationDuration\": 1000, \"nodeRepulsion\": 8000},\n    height=\"600px\",\n    selection_type=\"additive\",\n    key=\"network_analysis\"\n)\n\n# Analysis results\nif selected[\"nodes\"]:\n    selected_data = [node for node in network_data[\"nodes\"] if node[\"id\"] in selected[\"nodes\"]]\n    df = pd.DataFrame(selected_data)\n    \n    st.subheader(\"\ud83c\udfa1 Selected Node Analysis\")\n    st.dataframe(df, use_container_width=True)\n    \n    # Calculate metrics\n    if \"influence\" in df.columns:\n        avg_influence = df[\"influence\"].mean()\n        st.metric(\"Average Influence\", f\"{avg_influence:.1f}\")\n    \n    if \"engagement\" in df.columns:\n        avg_engagement = df[\"engagement\"].mean()\n        st.metric(\"Average Engagement\", f\"{avg_engagement:.1f}\")\n\nif selected[\"edges\"]:\n    selected_edges = [edge for edge in network_data[\"edges\"] \n                     if f\"{edge['source']}{edge['target']}\" in selected[\"edges\"] or \n                        f\"{edge['source']}\u279e{edge['target']}\" in selected[\"edges\"]]\n    \n    if selected_edges:\n        st.subheader(\"\ud83d\udd17 Selected Connection Analysis\")\n        edge_df = pd.DataFrame(selected_edges)\n        st.dataframe(edge_df, use_container_width=True)\n```
+    "Force-directed (fCoSE)": {"name": "fcose", "animationDuration": 800},
+    "Hierarchical (Klay)": {"name": "klay", "direction": "DOWN"},
+    "Grid": {"name": "grid", "rows": 2},
+    "Circle": {"name": "circle"},
+    "Breadthfirst": {"name": "breadthfirst", "directed": True}
+    }
+
+layout_choice = st.selectbox("Choose Layout Algorithm", list(layouts.keys()))
+
+# Render with selected layout
+selected = cytoscape(
+    elements,
+    stylesheet=[{"selector": "node", "style": {"label": "data(label)"}}],
+        layout=layouts[layout_choice],
+        height="400px",
+        key=f"layout_demo_{layout_choice.replace(' ', '_')}"
+)
+
+st.info(f"💡 **{layout_choice}** layout selected. Try different layouts to see how they affect node positioning!")
+```
+
+### Interactive Network Analysis
+
+```python
+import streamlit as st
+from st_cytoscape import cytoscape
+import pandas as pd
+
+# Sample network analysis data
+network_data = {
+    "nodes": [
+        {"id": "user1", "type": "user", "influence": 85},
+        {"id": "user2", "type": "user", "influence": 62},
+        {"id": "user3", "type": "admin", "influence": 95},
+        {"id": "content1", "type": "content", "engagement": 120},
+        {"id": "content2", "type": "content", "engagement": 89},
+    ],
+    "edges": [
+        {"source": "user1", "target": "content1", "interaction": "like", "weight": 3},
+        {"source": "user2", "target": "content1", "interaction": "share", "weight": 5},
+        {"source": "user3", "target": "content2", "interaction": "comment", "weight": 4},
+    ]
+}
+
+# Convert to Cytoscape format
+elements = []
+for node in network_data["nodes"]:
+    elements.append({"data": node})
+for edge in network_data["edges"]:
+    elements.append({"data": {"source": edge["source"], "target": edge["target"], **edge}})
+
+# Advanced styling with data-driven visuals
+stylesheet = [
+    {
+        "selector": "node[type='user']",
+        "style": {
+            "background-color": "#3498db",
+            "label": "data(id)",
+            "width": "mapData(influence, 0, 100, 30, 60)",
+            "height": "mapData(influence, 0, 100, 30, 60)",
+            "shape": "ellipse"
+        }
+    },
+    {
+        "selector": "node[type='admin']",
+        "style": {
+            "background-color": "#e74c3c",
+            "label": "data(id)",
+            "width": "mapData(influence, 0, 100, 30, 60)",
+            "height": "mapData(influence, 0, 100, 30, 60)",
+            "shape": "diamond"
+        }
+    },
+    {
+        "selector": "node[type='content']",
+        "style": {
+            "background-color": "#2ecc71",
+            "label": "data(id)",
+            "width": "mapData(engagement, 0, 150, 25, 50)",
+            "height": "mapData(engagement, 0, 150, 25, 50)",
+            "shape": "rectangle"
+        }
+    },
+    {
+        "selector": "edge",
+        "style": {
+            "width": "mapData(weight, 1, 5, 2, 8)",
+            "line-color": "#95a5a6",
+            "target-arrow-color": "#95a5a6",
+            "target-arrow-shape": "triangle",
+            "curve-style": "bezier",
+            "label": "data(interaction)",
+            "font-size": "10px",
+            "text-rotation": "autorotate"
+        }
+    }
+]
+
+# Interactive analysis
+st.title("\ud83d\udd0d Network Analysis Dashboard")
+st.markdown("**Instructions**: Click nodes to analyze connections. Use keyboard navigation for accessibility.")
+
+selected = cytoscape(
+    elements,
+    stylesheet,
+    layout={"name": "fcose", "animationDuration": 1000, "nodeRepulsion": 8000},
+    height="600px",
+    selection_type="additive",
+    key="network_analysis"
+)
+
+# Analysis results
+if selected["nodes"]:
+    selected_data = [node for node in network_data["nodes"] if node["id"] in selected["nodes"]]
+    df = pd.DataFrame(selected_data)
+
+    st.subheader("\ud83c\udfa1 Selected Node Analysis")
+    st.dataframe(df, use_container_width=True)
+
+    # Calculate metrics
+    if "influence" in df.columns:
+        avg_influence = df["influence"].mean()
+        st.metric("Average Influence", f"{avg_influence:.1f}")
+
+    if "engagement" in df.columns:
+        avg_engagement = df["engagement"].mean()
+        st.metric("Average Engagement", f"{avg_engagement:.1f}")
+
+if selected["edges"]:
+    selected_edges = [edge for edge in network_data["edges"]
+                     if f"{edge['source']}{edge['target']}" in selected["edges"] or
+                        f"{edge['source']}\u279e{edge['target']}" in selected["edges"]]
+
+    if selected_edges:
+        st.subheader("\ud83d\udd17 Selected Connection Analysis")
+        edge_df = pd.DataFrame(selected_edges)
+        st.dataframe(edge_df, use_container_width=True)
+```
 
 ## Version History
+
+### v1.0.2 (2024) - Current
+
+- 🎮 **Interactive Control Panel**: Real-time layout switching, zoom controls, and view reset functionality
+- ♿ **Enhanced Accessibility**: WCAG 2.1 compliance with full keyboard navigation and screen reader support
+- 🎨 **Advanced Theme Integration**: Real-time dark/light mode adaptation with enhanced styling for all UI elements
+- ⚡ **Performance**: ResizeObserver, debounced updates, and comprehensive memory management
+- 🔧 **Developer Experience**: Ultra-strict TypeScript 5.7.2 with advanced compiler options
+- 🧪 **Testing**: Modern Vitest 2.1.8 setup with React Testing Library 16.1.0
+- 🚀 **Build System**: Vite 6.0.7 with manual code splitting and tree shaking
+- 🎯 **Type Safety**: Comprehensive TypeScript definitions for all extensions
+- 📱 **Responsive**: Automatic graph resizing with ResizeObserver API
 
 ### v1.0.1 (2024)
 
