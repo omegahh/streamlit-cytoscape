@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "streamlit-cytoscape"
-version = "1.0.2"
+version = "1.0.3"
 description = "A Streamlit component to display a Cytoscape.js graph"
 readme = "README.md"
 license = "MIT"
