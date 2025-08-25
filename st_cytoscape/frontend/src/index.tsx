@@ -46,10 +46,12 @@ import { setupResizeObserver, cleanupResizeObserver } from "./resize-utils"
 cytoscape.use(fcose)
 cytoscape.use(klay)
 
-// Create main container with accessibility features
-const div = document.body.appendChild(document.createElement("div"))
+// Use the root container for the component
+const div = document.getElementById("root") || document.body.appendChild(document.createElement("div"))
 div.style.position = "relative"
 div.style.overflow = "hidden" // Prevent scroll issues
+div.style.width = "100%"
+div.style.height = "100%"
 
 // Global state
 let args = ""
