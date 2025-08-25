@@ -52,6 +52,8 @@ div.style.position = "relative"
 div.style.overflow = "hidden" // Prevent scroll issues
 div.style.width = "100%"
 div.style.height = "100%"
+div.style.padding = "16px" // Add padding around the canvas
+div.style.boxSizing = "border-box" // Include padding in dimensions
 
 // Global state
 let args = ""
@@ -128,7 +130,7 @@ function onRender(event: Event): void {
           layout: (data.args.layout as CytoscapeLayout) || { name: "grid" },
           selectionType:
             (data.args.selectionType as "single" | "additive") || "additive",
-          userZoomingEnabled: data.args.userZoomingEnabled !== false,
+          userZoomingEnabled: data.args.wheelZoomEnabled === true ? (data.args.userZoomingEnabled !== false) : false,
           userPanningEnabled: data.args.userPanningEnabled !== false,
           minZoom: (data.args.minZoom as number) || 1e-50,
           maxZoom: (data.args.maxZoom as number) || 1e50,
@@ -162,7 +164,7 @@ function onRender(event: Event): void {
             ? layoutConfig.name || "fcose"
             : "fcose"
 
-        initializeControlPanel(currentCy, currentLayoutName)
+        initializeControlPanel(currentCy, currentLayoutName, elements, combinedStyles)
         createControlPanel(div, data.theme || createFallbackTheme())
 
         // Setup resize observer

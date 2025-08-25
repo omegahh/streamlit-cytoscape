@@ -25,6 +25,7 @@ def cytoscape(
     selection_type: str = "additive",
     user_zooming_enabled: bool = True,
     user_panning_enabled: bool = True,
+    wheel_zoom_enabled: bool = False,
     min_zoom: float = 1e-50,
     max_zoom: float = 1e50,
     key: Optional[str] = None,
@@ -40,6 +41,7 @@ def cytoscape(
         selection_type: "single" or "additive" selection behavior
         user_zooming_enabled: Allow user zooming interactions
         user_panning_enabled: Allow user panning interactions
+        wheel_zoom_enabled: Allow mouse wheel zooming (default: False)
         min_zoom: Minimum zoom level
         max_zoom: Maximum zoom level
         key: Unique component identifier for state persistence
@@ -83,6 +85,7 @@ def cytoscape(
         selectionType=selection_type,
         userZoomingEnabled=user_zooming_enabled,
         userPanningEnabled=user_panning_enabled,
+        wheelZoomEnabled=wheel_zoom_enabled,
         minZoom=min_zoom,
         maxZoom=max_zoom,
         key=key,

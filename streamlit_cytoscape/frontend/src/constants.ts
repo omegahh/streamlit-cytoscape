@@ -38,8 +38,8 @@ export const DEFAULT_LAYOUT_OPTIONS = {
 // UI constants
 export const CONTROL_PANEL = {
   POSITION: {
-    TOP: "10px",
-    RIGHT: "10px",
+    TOP: "0px",
+    RIGHT: "0px", 
     Z_INDEX: "1000",
   },
   STYLING: {

@@ -8,12 +8,16 @@
 
 > **Note**: This package was formerly known as `st-cytoscape`. Special thanks to the original `st-cytoscape` contributors for their foundational work!
 
-✨ **Version 1.0.2 Features:**
+✨ **Version 1.0.3 Features:**
 
 - 🚀 **Modern Stack**: Built with Cytoscape.js v3.33.1, React 18.3.1, TypeScript 5.7.2, and Vite 6.0.7
-- 🎮 **Interactive Control Panel**: Real-time layout switching, zoom controls, and view reset functionality
+- 🎮 **Enhanced Control Panel**: Real-time layout switching, zoom controls, view reset, PNG/SVG export, and dynamic legend
+- 🖱️ **Mouse Interaction Control**: Configurable mouse wheel zoom (disabled by default for better UX)
+- 📤 **Export Functionality**: High-quality PNG and vector SVG export with one-click download
+- 🏷️ **Dynamic Legend**: Automatic legend generation based on node labels and visual styles
 - ♿ **Accessibility**: WCAG 2.1 compliant with full keyboard navigation, ARIA support, and screen reader integration
 - 🎨 **Advanced Theme Integration**: Real-time Streamlit theme adaptation with dark/light mode support for all UI elements
+- 🖼️ **Optimized Canvas**: Professional spacing with proper padding and visual hierarchy
 - ⚡ **Performance**: Optimized builds with manual code splitting, tree shaking, and ResizeObserver
 - 🔧 **Developer Experience**: Ultra-strict TypeScript, Vitest testing, and comprehensive error handling
 - 📱 **Responsive**: Mobile-friendly with automatic graph resizing and touch support
@@ -109,8 +113,9 @@ if selected["edges"]:
     st.info(f"🔗 Selected {len(selected['edges'])} edge(s): {', '.join(selected['edges'])}")
 
 # Interactive controls and accessibility info
-st.caption("🎮 **Interactive Controls**: Use the control panel (top-right) for layout switching and zoom controls")
-st.caption("💡 **Accessibility**: Use arrow keys to navigate, Enter/Space to select, Escape to clear selection")
+st.caption("🎮 **Enhanced Control Panel**: Layout switching • Zoom controls • PNG/SVG export • Dynamic legend")
+st.caption("🖱️ **Mouse Controls**: Drag to pan • Control panel zoom (wheel zoom disabled by default)")
+st.caption("💡 **Accessibility**: Arrow keys to navigate • Enter/Space to select • Escape to clear selection")
 ```
 
 ## Usage
@@ -123,6 +128,7 @@ layout={"name": "fcose", "animationDuration": 0},
 selection_type="additive",
 user_zooming_enabled=True,
 user_panning_enabled=True,
+wheel_zoom_enabled=False,
 min_zoom=1e-50,
 max_zoom=1e50,
 key=None
@@ -141,6 +147,7 @@ Embeds a Cytoscape.js graph and returns a dictionary containing the list of the 
 - `selection_type` (string: "single" or "additive"): selection behavior for nodes and edges
 - `user_zooming_enabled` (boolean): cf. https://js.cytoscape.org/#core/initialisation
 - `user_panning_enabled` (boolean): cf. https://js.cytoscape.org/#core/initialisation
+- `wheel_zoom_enabled` (boolean): **NEW!** Enable mouse wheel zooming (default: False for better UX)
 - `min_zoom` (float): cf. https://js.cytoscape.org/#core/initialisation
 - `max_zoom` (float): cf. https://js.cytoscape.org/#core/initialisation
 - `key` (str or None): an optional key that uniquely identifies this component. If this is None, and the component's arguments are changed, the component will be re-mounted in the Streamlit frontend and lose its current state
@@ -221,6 +228,149 @@ layout = {"name": "breadthfirst", "directed": True, "spacingFactor": 1.5}
 # Concentric layout
 layout = {"name": "concentric", "minNodeSpacing": 20}
 ```
+
+### 📤 Export Functionality
+
+**NEW in v1.0.3!** Export your graphs as high-quality images with one-click download:
+
+```python
+# Export functionality is automatically available in the control panel
+# Users can click "PNG" or "SVG" buttons to download their graphs
+
+# No additional configuration needed!
+selected = cytoscape(
+    elements,
+    stylesheet,
+    layout={"name": "fcose", "animationDuration": 500},
+    height="500px",
+    key="exportable_graph"
+)
+
+# Control panel includes:
+# - PNG Export: High-resolution (2x scale) raster images
+# - SVG Export: Vector graphics that scale perfectly
+# - Files automatically download to user's default folder
+```
+
+**Export Features:**
+- **PNG Export**: 2x resolution for crisp, high-quality images
+- **SVG Export**: Vector format maintains quality at any scale  
+- **One-Click Download**: Files save automatically to browser's download folder
+- **Clean Output**: White background with proper margins
+- **Full Graph**: Exports complete graph, not just visible area
+- **Accessibility**: Screen reader announcements for export success/failure
+
+### 🏷️ Dynamic Legend System
+
+**NEW in v1.0.3!** Automatic legend generation based on your node types and styles:
+
+```python
+# Create nodes with different types/classes
+elements = [
+    # Server nodes
+    {"data": {"id": "DB1", "label": "Database Server"}, "classes": ["server"]},
+    {"data": {"id": "WEB1", "label": "Web Server"}, "classes": ["server"]},
+    
+    # Client nodes  
+    {"data": {"id": "APP1", "label": "Mobile App"}, "classes": ["client"]},
+    {"data": {"id": "BROWSER1", "label": "Web Browser"}, "classes": ["client"]},
+    
+    # Service nodes
+    {"data": {"id": "API1", "label": "API Gateway"}, "classes": ["service"]},
+]
+
+# Style different node types
+stylesheet = [
+    # Server nodes - Blue rectangles
+    {
+        "selector": ".server",
+        "style": {
+            "background-color": "#3498db",
+            "shape": "roundrectangle",
+            "label": "data(label)",
+        },
+    },
+    # Client nodes - Green circles
+    {
+        "selector": ".client", 
+        "style": {
+            "background-color": "#2ecc71",
+            "shape": "ellipse",
+            "label": "data(label)",
+        },
+    },
+    # Service nodes - Orange diamonds
+    {
+        "selector": ".service",
+        "style": {
+            "background-color": "#f39c12",
+            "shape": "diamond", 
+            "label": "data(label)",
+        },
+    },
+]
+
+# Legend automatically appears in control panel!
+selected = cytoscape(elements, stylesheet, key="legend_demo")
+
+# Legend shows:
+# 🔵 Database Server
+# 🔵 Web Server  
+# 🟢 Mobile App
+# 🟢 Web Browser
+# 🟠 API Gateway
+```
+
+**Legend Features:**
+- **Automatic Detection**: Extracts unique node labels from graph data
+- **Style Matching**: Shows actual colors and shapes from your stylesheet
+- **Smart Grouping**: Groups nodes by visual appearance
+- **Scrollable Design**: Handles many node types (max height: 120px)
+- **Theme Integration**: Adapts to Streamlit's light/dark themes
+- **Visual Indicators**: Colored shapes matching your node styles
+
+### 🖱️ Mouse Interaction Control
+
+**NEW in v1.0.3!** Fine-grained control over mouse interactions:
+
+```python
+# Default: Wheel zoom disabled for better UX (recommended)
+selected = cytoscape(
+    elements, 
+    stylesheet,
+    wheel_zoom_enabled=False,  # Default - drag to pan, control panel for zoom
+    key="controlled_interaction"
+)
+
+# Enable wheel zoom if needed for your use case
+selected = cytoscape(
+    elements,
+    stylesheet, 
+    wheel_zoom_enabled=True,   # Traditional mouse wheel zoom
+    key="wheel_zoom_enabled"
+)
+
+# Best practice: Use default (False) for cleaner UX
+# Users can:
+# - Drag to pan the graph
+# - Use control panel buttons for zoom (➕ ➖ ⊡)
+# - Reset view with control panel
+# - Export graphs with control panel
+```
+
+**Interaction Modes:**
+
+**wheel_zoom_enabled=False (Recommended Default):**
+- ✅ Drag to pan: Smooth graph navigation
+- ✅ Control panel zoom: Precise zoom controls (➕ ➖ ⊡)
+- ✅ Better UX: No accidental zooming while scrolling page
+- ✅ All other features work: Export, legend, layout switching
+
+**wheel_zoom_enabled=True (Traditional):**
+- ✅ Mouse wheel zoom: Traditional zoom with scroll wheel
+- ✅ Drag to pan: Standard graph navigation
+- ✅ Control panel zoom: Still available
+- ⚠️ Can interfere with page scrolling in some layouts
 
 ### ♿ Accessibility Features
 
@@ -469,6 +619,48 @@ custom_stylesheet = [
 # - Text (Streamlit text color)
 ```
 
+### New Features Best Practices (v1.0.3)
+
+```python
+# Export Functionality - Professional graphs
+selected = cytoscape(
+    elements,
+    clean_stylesheet,  # Use clean colors and fonts for better export quality
+    layout={"name": "fcose", "fit": True, "padding": 30},  # Add padding for exports
+    height="600px",    # Larger height for better export resolution
+    key="export_ready_graph"
+)
+# Users can click PNG/SVG buttons in control panel to export
+
+# Dynamic Legend - Best practices
+elements = [
+    # Use descriptive labels that will appear in legend
+    {"data": {"id": "srv1", "label": "Database Server"}, "classes": ["server"]},
+    {"data": {"id": "api1", "label": "API Service"}, "classes": ["service"]},
+    # Legend automatically shows: "Database Server", "API Service"
+]
+
+stylesheet = [
+    # Use distinct colors for different node types  
+    {"selector": ".server", "style": {"background-color": "#3498db"}},   # Blue
+    {"selector": ".service", "style": {"background-color": "#f39c12"}},  # Orange
+    # Legend shows colored indicators matching these styles
+]
+
+# Mouse Interaction - Recommended settings
+selected = cytoscape(
+    elements, 
+    stylesheet,
+    wheel_zoom_enabled=False,  # Default: Better UX, no accidental zoom
+    user_panning_enabled=True,  # Keep drag-to-pan
+    layout={"name": "fcose", "animationDuration": 500},
+    key="optimized_interaction"
+)
+
+# Canvas Optimization - The component now includes proper padding automatically
+# No additional configuration needed for professional spacing!
+```
+
 ### Common Issues & Solutions
 
 **Issue**: Component loading error: "Your app is having trouble loading the streamlit_cytoscape.streamlit_cytoscape component"
@@ -502,13 +694,17 @@ elements = [{"data": {"id": "unique_id"}}]  # Ensure unique IDs
 selected = cytoscape(elements, stylesheet, selection_type="additive")  # or "single"
 ```
 
-**Issue**: Interactive control panel not visible or responding
+**Issue**: Enhanced control panel not visible or responding
 
 ```python
-# Solution: The component automatically includes interactive controls in the top-right
+# Solution: The component automatically includes enhanced controls in the top-right
 # Ensure you're not overriding the key parameter too frequently:
 selected = cytoscape(elements, stylesheet, key="stable_graph_key")
-# Control panel includes: Layout switching, Zoom in/out, Fit view, Reset view
+# Enhanced control panel (v1.0.3) includes:
+# - Layout switching (Force, Hierarchical, CoSE, Circle, Grid, Reset View)
+# - Zoom controls (+ - ⊡) 
+# - Export buttons (PNG, SVG)
+# - Dynamic legend (automatic based on node labels)
 ```
 
 **Issue**: Accessibility concerns
@@ -732,11 +928,15 @@ stylesheet = [
     },
 ]
 
-# Interactive analysis
+# Interactive analysis with enhanced features
 st.title("😀 Network Analysis Dashboard")
-st.markdown(
-    "**Instructions**: Click nodes to analyze connections. Use keyboard navigation for accessibility."
-)
+st.markdown("""
+**Instructions**: 
+- Click nodes to analyze connections
+- Use enhanced control panel for layouts, zoom, and export
+- Legend shows node types automatically
+- Drag to pan (wheel zoom disabled for better UX)
+""")
 
 selected = cytoscape(
     elements,
@@ -744,6 +944,7 @@ selected = cytoscape(
     layout={"name": "fcose", "animationDuration": 1000, "nodeRepulsion": 8000},
     height="600px",
     selection_type="additive",
+    wheel_zoom_enabled=False,  # Better UX - drag to pan, control panel zoom
     key="network_analysis",
 )
 
@@ -782,7 +983,18 @@ if selected["edges"]:
 
 ## Version History
 
-### v1.0.2 (2024) - Current
+### v1.0.3 (2024) - Current
+
+- 📤 **Export Functionality**: High-quality PNG (2x resolution) and vector SVG export with one-click download
+- 🏷️ **Dynamic Legend System**: Automatic legend generation based on node labels and visual styles
+- 🖱️ **Mouse Interaction Control**: Configurable wheel zoom (disabled by default for better UX)
+- 🎮 **Enhanced Control Panel**: Reorganized layout with export buttons and scrollable legend
+- 🖼️ **Optimized Canvas**: Professional spacing with 16px padding and improved visual hierarchy
+- ♿ **Improved Accessibility**: Export announcements and enhanced screen reader support
+- 🎨 **Better Theming**: Legend and export buttons adapt to Streamlit themes
+- ⚡ **Performance**: Optimized control panel rendering and memory management
+
+### v1.0.2 (2024)
 
 - 🎮 **Interactive Control Panel**: Real-time layout switching, zoom controls, and view reset functionality
 - ♿ **Enhanced Accessibility**: WCAG 2.1 compliance with full keyboard navigation and screen reader support
