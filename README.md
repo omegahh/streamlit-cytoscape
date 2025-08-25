@@ -98,8 +98,8 @@ layout = {
 
 # Render the graph with accessibility and theme support
 selected = cytoscape(
-    elements, 
-    stylesheet, 
+    elements,
+    stylesheet,
     layout=layout,
     height="400px",
     key="graph"  # Stable key prevents unnecessary re-renders
@@ -245,8 +245,9 @@ selected = cytoscape(elements, stylesheet, key="accessible_graph")
 ```
 
 **Keyboard Navigation:**
+
 - `Arrow Keys`: Navigate between elements
-- `Enter/Space`: Select/toggle element selection  
+- `Enter/Space`: Select/toggle element selection
 - `Escape`: Clear all selections
 - `Home`: Select first element
 - `End`: Select last element
@@ -271,7 +272,7 @@ selected = cytoscape(elements, stylesheet, key="themed_graph")
 # Set in .streamlit/config.toml:
 # [theme]
 # primaryColor = "#FF6B6B"
-# backgroundColor = "#FFFFFF" 
+# backgroundColor = "#FFFFFF"
 # secondaryBackgroundColor = "#F0F2F6"
 # textColor = "#262730"
 ```
@@ -291,8 +292,8 @@ layout = {
 
 # Performance-optimized rendering
 selected = cytoscape(
-    elements, 
-    stylesheet, 
+    elements,
+    stylesheet,
     layout=layout,
     key="perf_graph",  # Stable key prevents re-mounting
     user_zooming_enabled=True,
@@ -322,6 +323,7 @@ npm test -- --coverage # Coverage report
 ```
 
 **Testing Stack:**
+
 - **Vitest 2.1.8**: Lightning-fast test runner (Jest-compatible)
 - **React Testing Library 16.1.0**: Component testing best practices
 - **jsdom 25.0.1**: Browser environment simulation
@@ -329,8 +331,8 @@ npm test -- --coverage # Coverage report
 
 ## 🛠️ Contributing to st-cytoscape
 
-> **For End Users**: Skip this section! You only need `pip install st-cytoscape`. 
-> 
+> **For End Users**: Skip this section! You only need `pip install st-cytoscape`.
+>
 > **For Contributors**: This section explains how to modify and build the component.
 
 ### Development Environment Setup
@@ -362,6 +364,7 @@ streamlit run examples/your_test_app.py
 ### Why Development Mode?
 
 The package works in two modes:
+
 - **Production Mode** (`_RELEASE = True`): Uses pre-built assets from `frontend/build/`
 - **Development Mode** (`_RELEASE = False`): Uses live development server for frontend changes
 
@@ -463,38 +466,59 @@ custom_stylesheet = [
 
 # Theme colors are automatically applied for:
 # - Selected elements (primary color)
-# - Hover states (primary color with transparency)  
+# - Hover states (primary color with transparency)
 # - Background (Streamlit background color)
 # - Text (Streamlit text color)
 ```
 
 ### Common Issues & Solutions
 
+**Issue**: Component loading error: \"Your app is having trouble loading the st_cytoscape.st_cytoscape component\"
+
+```bash
+# Solution: Ensure proper build structure (for developers/contributors)
+cd st_cytoscape/frontend
+npm run build
+# This creates the required build/index.html and build/assets/ structure
+```
+
 **Issue**: Graph not updating when data changes
+
 ```python
 # Solution: Use stable, unique keys
 selected = cytoscape(elements, stylesheet, key=f\"graph_{data_version}\")
 ```
 
 **Issue**: Slow performance with large graphs
+
 ```python
 # Solution: Optimize layout and disable animations
 layout = {\"name\": \"fcose\", \"animationDuration\": 0, \"quality\": \"draft\"}
 ```
 
 **Issue**: Selection not working as expected
+
 ```python
 # Solution: Check element structure and selection_type
 elements = [{\"data\": {\"id\": \"unique_id\"}}]  # Ensure unique IDs
 selected = cytoscape(elements, stylesheet, selection_type=\"additive\")  # or \"single\"
 ```
 
+**Issue**: Control panel not responding
+
+```python
+# Solution: The component automatically includes interactive controls
+# Ensure you're not overriding the key parameter too frequently:
+selected = cytoscape(elements, stylesheet, key=\"stable_graph_key\")
+```
+
 **Issue**: Accessibility concerns
+
 ```python
 # Solution: Component is automatically accessible
 # Ensure your Streamlit app has proper heading structure:
 st.title(\"Network Analysis\")
-st.subheader(\"Interactive Graph\") 
+st.subheader(\"Interactive Graph\")
 selected = cytoscape(elements, stylesheet, key=\"main_graph\")
 ```
 
@@ -514,7 +538,7 @@ if \"graph_data\" not in st.session_state:
 # Dynamic element generation
 def create_dynamic_elements(num_nodes, num_edges):
     elements = []
-    
+
     # Create nodes
     for i in range(num_nodes):
         elements.append({
@@ -524,7 +548,7 @@ def create_dynamic_elements(num_nodes, num_edges):
                 \"value\": i * 10  # Data-driven sizing
             }
         })
-    
+
     # Create edges
     for i in range(min(num_edges, num_nodes - 1)):
         elements.append({
@@ -534,7 +558,7 @@ def create_dynamic_elements(num_nodes, num_edges):
                 \"target\": f\"node_{i+1}\"
             }
         })
-    
+
     return elements
 
 # Dynamic styling based on data
@@ -583,7 +607,7 @@ if selected[\"nodes\"] or selected[\"edges\"]:
 
 ### Multi-Layout Comparison
 
-```python
+````python
 import streamlit as st
 from st_cytoscape import cytoscape
 
@@ -634,3 +658,4 @@ layouts = {
 - Legacy version for Python 3.6-3.9 compatibility
 - Cytoscape.js v3.20.0
 - Create React App build system
+````
