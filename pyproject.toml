@@ -3,16 +3,16 @@ requires = ["setuptools>=45", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "st-cytoscape"
+name = "streamlit-cytoscape"
 version = "1.0.2"
 description = "A Streamlit component to display a Cytoscape.js graph"
 readme = "README.md"
 license = "MIT"
 authors = [
-    {name = "st-cytoscape contributors"}
+    {name = "streamlit-cytoscape contributors"}
 ]
 maintainers = [
-    {name = "st-cytoscape contributors"}
+    {name = "streamlit-cytoscape contributors"}
 ]
 classifiers = [
     "Development Status :: 4 - Beta",
@@ -31,16 +31,16 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/vivien000/st-cytoscape"
-Repository = "https://github.com/vivien000/st-cytoscape"
-Issues = "https://github.com/vivien000/st-cytoscape/issues"
+Homepage = "https://github.com/omegahh/streamlit-cytoscape"
+Repository = "https://github.com/omegahh/streamlit-cytoscape"
+Issues = "https://github.com/omegahh/streamlit-cytoscape/issues"
 
 [tool.setuptools]
 include-package-data = true
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["st_cytoscape*"]
+include = ["streamlit_cytoscape*"]
 
 [tool.setuptools.package-data]
-st_cytoscape = ["frontend/build/**/*"]
+streamlit_cytoscape = ["frontend/build/**/*"]

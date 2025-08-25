@@ -1,9 +1,9 @@
-st_cytoscape/frontend/node_modules/
-st_cytoscape/frontend/build/
-st_cytoscape/frontend/package-lock.json
+streamlit_cytoscape/frontend/node_modules/
+streamlit_cytoscape/frontend/build/
+streamlit_cytoscape/frontend/package-lock.json
 build/
 dist/
-st_cytoscape.egg-info/
+streamlit_cytoscape.egg-info/
 __pycache__/
 *.pyc
 *.pyo

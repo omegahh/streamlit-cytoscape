@@ -4,13 +4,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a modern Streamlit custom component that embeds interactive Cytoscape.js graphs with comprehensive accessibility, theme integration, bidirectional communication, and interactive control panels. The project consists of a Python backend (`st_cytoscape/__init__.py`) that provides the Streamlit API and a React/TypeScript frontend that renders the actual graph visualization with advanced features including real-time layout switching and zoom controls.
+This is a modern Streamlit custom component that embeds interactive Cytoscape.js graphs with comprehensive accessibility, theme integration, bidirectional communication, and interactive control panels. The project consists of a Python backend (`streamlit_cytoscape/__init__.py`) that provides the Streamlit API and a React/TypeScript frontend that renders the actual graph visualization with advanced features including real-time layout switching and zoom controls.
 
 ## Development Commands
 
 ### Frontend Development (React 18 + TypeScript 5.7 + Vite 6)
 ```bash
-cd st_cytoscape/frontend
+cd streamlit_cytoscape/frontend
 npm run dev        # Start Vite development server (hot reload)
 npm start          # Alternative start command (port 3001)
 npm run build      # Build production bundle with TypeScript + Vite
@@ -27,7 +27,7 @@ pip install build          # Install build tool if needed
 ```
 
 ### Development/Release Toggle
-The component switches between development and production modes via `_RELEASE = True/False` in `st_cytoscape/__init__.py:4`. 
+The component switches between development and production modes via `_RELEASE = True/False` in `streamlit_cytoscape/__init__.py:4`. 
 - `_RELEASE = False`: Uses localhost:3001 for live frontend development with HMR
 - `_RELEASE = True`: Uses built frontend from `frontend/build/` (current setting)
 
@@ -43,7 +43,7 @@ The component now includes an integrated control panel with:
 
 ### Two-Way Communication Pattern
 The component implements Streamlit's bidirectional communication protocol:
-1. **Python → React**: Parameters passed via `_component_func()` in `st_cytoscape/__init__.py:76-89`
+1. **Python → React**: Parameters passed via `_component_func()` in `streamlit_cytoscape/__init__.py:76-89`
 2. **React → Python**: Selected nodes/edges returned via `Streamlit.setComponentValue()` in `frontend/src/index.tsx:187`
 
 ### Modern Frontend Stack (2024)
@@ -54,7 +54,7 @@ The component implements Streamlit's bidirectional communication protocol:
 - **Cytoscape.js 3.33.1**: Latest graph visualization library with performance improvements
 
 ### Key Integration Points
-- **Component Registration**: `st_cytoscape/__init__.py:6-14` handles dev vs production component declaration
+- **Component Registration**: `streamlit_cytoscape/__init__.py:6-14` handles dev vs production component declaration
 - **Interactive Control Panel**: `frontend/src/index.tsx:194-490` full-featured control panel with layout switching and zoom controls
 - **Advanced Theme Integration**: `frontend/src/index.tsx:546-660` with automatic dark/light theme adaptation
 - **Selection Management**: `frontend/src/index.tsx:510-541` with accessibility announcements and debounced updates
@@ -115,14 +115,14 @@ The selection system uses optimized Cytoscape.js public API with performance enh
 - **Performance Monitoring**: Error boundaries and graceful degradation
 
 ### Package Structure (Updated)
-- `st_cytoscape/__init__.py`: Main Python API with enhanced parameter validation
-- `st_cytoscape/frontend/src/index.tsx`: Advanced React component with accessibility
-- `st_cytoscape/frontend/src/types/cytoscape.d.ts`: Comprehensive TypeScript definitions
-- `st_cytoscape/frontend/src/test/setup.ts`: Modern testing configuration  
-- `st_cytoscape/frontend/vite.config.ts`: Optimized Vite build with manual chunks
-- `st_cytoscape/frontend/vitest.config.ts`: Vitest configuration with jsdom
-- `st_cytoscape/frontend/tsconfig.json`: Strict TypeScript configuration
-- `st_cytoscape/frontend/tsconfig.node.json`: Node.js specific TypeScript config
+- `streamlit_cytoscape/__init__.py`: Main Python API with enhanced parameter validation
+- `streamlit_cytoscape/frontend/src/index.tsx`: Advanced React component with accessibility
+- `streamlit_cytoscape/frontend/src/types/cytoscape.d.ts`: Comprehensive TypeScript definitions
+- `streamlit_cytoscape/frontend/src/test/setup.ts`: Modern testing configuration  
+- `streamlit_cytoscape/frontend/vite.config.ts`: Optimized Vite build with manual chunks
+- `streamlit_cytoscape/frontend/vitest.config.ts`: Vitest configuration with jsdom
+- `streamlit_cytoscape/frontend/tsconfig.json`: Strict TypeScript configuration
+- `streamlit_cytoscape/frontend/tsconfig.node.json`: Node.js specific TypeScript config
 - `pyproject.toml`: Modern Python packaging with build system integration
 - `MANIFEST.in`: Frontend build artifacts inclusion for Python package distribution
 
@@ -193,11 +193,11 @@ The frontend uses an extremely strict TypeScript configuration (`frontend/tsconf
 ## Troubleshooting
 
 ### Component Loading Issues
-**Problem**: "Your app is having trouble loading the st_cytoscape.st_cytoscape component"
+**Problem**: "Your app is having trouble loading the streamlit_cytoscape.streamlit_cytoscape component"
 
 **Solution**: Ensure the frontend build is properly configured:
 ```bash
-cd st_cytoscape/frontend
+cd streamlit_cytoscape/frontend
 npm run build
 # Verify build/index.html and build/assets/ exist
 ```

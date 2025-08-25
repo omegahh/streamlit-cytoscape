@@ -1,12 +1,12 @@
-# st-cytoscape
+# streamlit-cytoscape
 
-[![PyPI version](https://badge.fury.io/py/st-cytoscape.svg)](https://badge.fury.io/py/st-cytoscape)
+[![PyPI version](https://badge.fury.io/py/streamlit-cytoscape.svg)](https://badge.fury.io/py/streamlit-cytoscape)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![Streamlit](https://img.shields.io/badge/streamlit-1.28.0+-red.svg)](https://streamlit.io/)
 
-`st-cytoscape` is a modern [Streamlit](https://streamlit.io) component that embeds interactive [Cytoscape.js](https://js.cytoscape.org/) graphs with bidirectional communication for selected nodes and edges.
+`streamlit-cytoscape` is a modern [Streamlit](https://streamlit.io) component that embeds interactive [Cytoscape.js](https://js.cytoscape.org/) graphs with bidirectional communication for selected nodes and edges.
 
-![Screenshot](screenshot.gif)
+> **Note**: This package was formerly known as `st-cytoscape`. Special thanks to the original `st-cytoscape` contributors for their foundational work!
 
 ✨ **Version 1.0.2 Features:**
 
@@ -20,12 +20,10 @@
 - 🎯 **Memory Management**: Robust lifecycle management preventing memory leaks
 - 🔀 **Bidirectional Communication**: Enhanced selection synchronization with error recovery
 
-A more advanced example can be seen live [here](https://share.streamlit.io/vivien0000/causal-simulator/main/app.py) ([code](https://github.com/vivien000/causal-simulator)).
-
 ## Installation
 
 ```bash
-pip install st-cytoscape
+pip install streamlit-cytoscape
 ```
 
 **That's it!** No additional setup required. The package includes pre-built frontend assets.
@@ -35,13 +33,11 @@ pip install st-cytoscape
 - **Python**: 3.10 or higher
 - **Streamlit**: 1.28.0 or higher
 
-> **Note**: This package has been modernized for current Python and Streamlit versions. For legacy Python versions (3.6-3.9), please use st-cytoscape v0.0.4.
-
 ### Quick Verification
 
 ```bash
 # Verify installation
-python -c "from st_cytoscape import cytoscape; print('✅ st-cytoscape installed successfully!')"
+python -c "from streamlit_cytoscape import cytoscape; print('✅ streamlit-cytoscape installed successfully!')"
 
 # Run the quickstart example
 streamlit run your_app.py
@@ -51,7 +47,7 @@ streamlit run your_app.py
 
 ```python
 import streamlit as st
-from st_cytoscape import cytoscape
+from streamlit_cytoscape import cytoscape
 
 # Define graph elements
 elements = [
@@ -155,7 +151,7 @@ Embeds a Cytoscape.js graph and returns a dictionary containing the list of the 
 
 #### fCoSE Layout (Force-directed)
 
-`st-cytoscape` includes the powerful `fCoSE` layout engine ([cytoscape-fcose v2.2.0](https://github.com/iVis-at-Bilkent/cytoscape.js-fcose)) for sophisticated force-directed positioning with constraint support.
+`streamlit-cytoscape` includes the powerful `fCoSE` layout engine ([cytoscape-fcose v2.2.0](https://github.com/iVis-at-Bilkent/cytoscape.js-fcose)) for sophisticated force-directed positioning with constraint support.
 
 ```python
 # Basic fCoSE layout
@@ -317,7 +313,7 @@ Modern testing setup with comprehensive coverage:
 
 ```bash
 # Run tests
-cd st_cytoscape/frontend
+cd streamlit_cytoscape/frontend
 npm test              # Run all tests
 npm run test:ui       # Interactive test UI
 npm test -- --watch   # Watch mode
@@ -331,9 +327,9 @@ npm test -- --coverage # Coverage report
 - **jsdom 25.0.1**: Browser environment simulation
 - **@testing-library/jest-dom 6.6.3**: Enhanced DOM assertions
 
-## 🛠️ Contributing to st-cytoscape
+## 🛠️ Contributing to streamlit-cytoscape
 
-> **For End Users**: Skip this section! You only need `pip install st-cytoscape`.
+> **For End Users**: Skip this section! You only need `pip install streamlit-cytoscape`.
 >
 > **For Contributors**: This section explains how to modify and build the component.
 
@@ -341,18 +337,18 @@ npm test -- --coverage # Coverage report
 
 ```bash
 # 1. Fork and clone the repository
-git clone https://github.com/YOUR-USERNAME/st-cytoscape.git
-cd st-cytoscape
+git clone https://github.com/YOUR-USERNAME/streamlit-cytoscape.git
+cd streamlit-cytoscape
 
 # 2. Install Python package in development mode
 pip install -e .
 
 # 3. Setup frontend development (for component modification)
-cd st_cytoscape/frontend
+cd streamlit_cytoscape/frontend
 npm install
 
 # 4. Enable development mode
-# Edit st_cytoscape/__init__.py and change:
+# Edit streamlit_cytoscape/__init__.py and change:
 # _RELEASE = True  →  _RELEASE = False
 
 # 5. Start frontend development server
@@ -374,7 +370,7 @@ The package works in two modes:
 
 ```bash
 # Make sure you're in frontend directory
-cd st_cytoscape/frontend
+cd streamlit_cytoscape/frontend
 
 # Development with hot reload (after npm install)
 npm run dev
@@ -389,28 +385,28 @@ npm test -- --coverage  # Coverage report
 
 # When done: Build for production and restore release mode
 npm run build      # Creates frontend/build/
-# Edit st_cytoscape/__init__.py: _RELEASE = False → _RELEASE = True
+# Edit streamlit_cytoscape/__init__.py: _RELEASE = False → _RELEASE = True
 ```
 
 ### Building and Publishing (Maintainers Only)
 
 ```bash
 # 1. Ensure frontend is built
-cd st_cytoscape/frontend
+cd streamlit_cytoscape/frontend
 npm run build
 
 # 2. Ensure production mode
-# In st_cytoscape/__init__.py: _RELEASE = True
+# In streamlit_cytoscape/__init__.py: _RELEASE = True
 
 # 3. Build Python package
 cd ../..  # Back to project root
 python -m build
 
 # 4. Verify package contents include frontend/build/
-tar -tzf dist/st-cytoscape-*.tar.gz | grep "frontend/build"
+tar -tzf dist/streamlit_cytoscape-*.tar.gz | grep "frontend/build"
 
 # 5. Test locally before publishing
-pip install dist/st_cytoscape-*.whl
+pip install dist/streamlit_cytoscape-*.whl
 ```
 
 ## 💡 Best Practices & Troubleshooting
@@ -475,11 +471,11 @@ custom_stylesheet = [
 
 ### Common Issues & Solutions
 
-**Issue**: Component loading error: "Your app is having trouble loading the st_cytoscape.st_cytoscape component"
+**Issue**: Component loading error: "Your app is having trouble loading the streamlit_cytoscape.streamlit_cytoscape component"
 
 ```bash
 # Solution: Ensure proper build structure (for developers/contributors)
-cd st_cytoscape/frontend
+cd streamlit_cytoscape/frontend
 npm run build
 # This creates the required build/index.html and build/assets/ structure
 ```
@@ -531,7 +527,7 @@ selected = cytoscape(elements, stylesheet, key="main_graph")
 
 ```python
 import streamlit as st
-from st_cytoscape import cytoscape
+from streamlit_cytoscape import cytoscape
 import time
 
 # Simulate dynamic data
@@ -612,7 +608,7 @@ if selected["nodes"] or selected["edges"]:
 
 ````python
 import streamlit as st
-from st_cytoscape import cytoscape
+from streamlit_cytoscape import cytoscape
 
 # Sample network data
 elements = [
@@ -653,7 +649,7 @@ st.info(f"💡 **{layout_choice}** layout selected. Try different layouts to see
 
 ```python
 import streamlit as st
-from st_cytoscape import cytoscape
+from streamlit_cytoscape import cytoscape
 import pandas as pd
 
 # Sample network analysis data

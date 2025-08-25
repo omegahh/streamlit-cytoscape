@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 """
-Test script for optimized st-cytoscape component
+Test script for streamlit-cytoscape component
 """
 
 import streamlit as st
 
-from st_cytoscape import cytoscape
+from streamlit_cytoscape import cytoscape
 
-st.title("🔬 Optimized st-cytoscape Test")
+st.title("🔬 Streamlit-Cytoscape Test")
 
 # Test data
 elements = [

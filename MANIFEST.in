@@ -1,1 +1,1 @@
-recursive-include st_cytoscape/frontend/build *
+recursive-include streamlit_cytoscape/frontend/build *

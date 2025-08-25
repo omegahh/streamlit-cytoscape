@@ -1,5 +1,5 @@
 {
-  "name": "st_cytoscape",
+  "name": "streamlit-cytoscape-frontend",
   "version": "1.0.2",
   "private": true,
   "type": "module",
