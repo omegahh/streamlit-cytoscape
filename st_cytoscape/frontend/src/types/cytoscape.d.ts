@@ -1,11 +1,11 @@
 declare module "cytoscape-fcose" {
-  import { Extension } from "cytoscape"
+  import type { Extension } from "cytoscape"
   const fcose: Extension
   export default fcose
 }
 
 declare module "cytoscape-klay" {
-  import { Extension } from "cytoscape"
+  import type { Extension } from "cytoscape"
   const klay: Extension
   export default klay
 }
@@ -71,45 +71,72 @@ export interface KlayLayoutOptions {
   thoroughness?: number
 }
 
+// Base element interface
+export interface ElementData {
+  readonly id: string
+  readonly source?: string
+  readonly target?: string
+  [key: string]: unknown
+}
+
 export interface CytoscapeElement {
-  data: {
-    id: string
-    source?: string
-    target?: string
-    [key: string]: any
-  }
+  readonly data: ElementData
   selected?: boolean
   selectable?: boolean
-  [key: string]: any
+  [key: string]: unknown
+}
+
+// Style interface with better typing
+export interface StyleProperties {
+  readonly [property: string]: string | number | ((ele: any) => string | number)
 }
 
 export interface CytoscapeStylesheet {
-  selector: string
-  style: {
-    [property: string]: any
-  }
+  readonly selector: string
+  readonly style: StyleProperties
+}
+
+// Layout type union with better constraints
+export type BuiltInLayoutName =
+  | "grid"
+  | "circle"
+  | "concentric"
+  | "breadthfirst"
+  | "cose"
+  | "random"
+  | "preset"
+
+export interface BaseLayoutOptions {
+  readonly animationDuration?: number
+  readonly fit?: boolean
+  readonly padding?: number
+}
+
+export interface BuiltInLayoutOptions extends BaseLayoutOptions {
+  readonly name: BuiltInLayoutName
+  [key: string]: unknown
 }
 
 export type CytoscapeLayout =
   | FcoseLayoutOptions
   | KlayLayoutOptions
-  | {
-      name:
-        | "grid"
-        | "circle"
-        | "concentric"
-        | "breadthfirst"
-        | "cose"
-        | "random"
-        | "preset"
-      animationDuration?: number
-      fit?: boolean
-      padding?: number
-      [key: string]: any
-    }
+  | BuiltInLayoutOptions
 
+// Component selection with readonly arrays
 export interface ComponentSelection {
-  nodes: string[]
-  edges: string[]
+  readonly nodes: readonly string[]
+  readonly edges: readonly string[]
 }
 
+// Utility types
+export type LayoutName =
+  | FcoseLayoutOptions["name"]
+  | KlayLayoutOptions["name"]
+  | BuiltInLayoutName
+export type SelectionType = "single" | "additive"
+
+// Node and edge type guards
+export const isNode = (element: CytoscapeElement): boolean =>
+  !element.data.source
+export const isEdge = (element: CytoscapeElement): boolean =>
+  !!element.data.source

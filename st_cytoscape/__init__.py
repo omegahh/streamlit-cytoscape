@@ -1,4 +1,6 @@
 import os
+from typing import Any, Dict, List, Optional
+
 import streamlit.components.v1 as components
 
 _RELEASE = True
@@ -15,65 +17,64 @@ else:
 
 
 def cytoscape(
-    elements,
-    stylesheet,
-    width="100%",
-    height="300px",
-    layout={"name": "fcose", "animationDuration": 0},
-    selection_type="additive",
-    user_zooming_enabled=True,
-    user_panning_enabled=True,
-    min_zoom=1e-50,
-    max_zoom=1e50,
-    key=None,
-):
-    """Creates a new instance of a Cytoscape.js graph.
+    elements: List[Dict[str, Any]],
+    stylesheet: List[Dict[str, Any]],
+    width: str = "100%",
+    height: str = "300px",
+    layout: Optional[Dict[str, Any]] = None,
+    selection_type: str = "additive",
+    user_zooming_enabled: bool = True,
+    user_panning_enabled: bool = True,
+    min_zoom: float = 1e-50,
+    max_zoom: float = 1e50,
+    key: Optional[str] = None,
+) -> Dict[str, List[str]]:
+    """Creates a new instance of a Cytoscape.js graph with interactive controls.
 
-    Parameters
-    ----------
-    elements: list
-        The list of nodes and edges of the graph
-        (cf. https://js.cytoscape.org/#notation/elements-json)
-    stylesheet: list
-        The style used for the graph (cf. https://js.cytoscape.org/#style)
-    width: string
-        The CSS width attribute of the graph's container
-    height: string
-        The CSS height attribute of the graph's container
-    layout: dict
-        The layout options for the graph (cf. https://js.cytoscape.org/#layouts)
-    selection_type: string ("single" or "additive")
-        Cf. https://js.cytoscape.org/#core/initialisation
-    user_zooming_enabled: boolean
-        Cf. https://js.cytoscape.org/#core/initialisation
-    user_panning_enabled: boolean
-        Cf. https://js.cytoscape.org/#core/initialisation
-    min_zoom: float
-        Cf. https://js.cytoscape.org/#core/initialisation
-    max_zoom: float
-        Cf. https://js.cytoscape.org/#core/initialisation
-    key: str or None
-        An optional key that uniquely identifies this component. If this is
-        None, and the component's arguments are changed, the component will
-        be re-mounted in the Streamlit frontend and lose its current state.
+    Args:
+        elements: List of nodes and edges (https://js.cytoscape.org/#notation/elements-json)
+        stylesheet: Visual styles for the graph (https://js.cytoscape.org/#style)
+        width: CSS width of the graph container (default: "100%")
+        height: CSS height of the graph container (default: "300px")
+        layout: Layout algorithm options (https://js.cytoscape.org/#layouts)
+        selection_type: "single" or "additive" selection behavior
+        user_zooming_enabled: Allow user zooming interactions
+        user_panning_enabled: Allow user panning interactions
+        min_zoom: Minimum zoom level
+        max_zoom: Maximum zoom level
+        key: Unique component identifier for state persistence
 
-    Returns
-    -------
-    dict
-        A dictionary containing the list of the ids of selected nodes ("nodes"
-        key) and the list of the ids of the selected edges ("edges" key)
+    Returns:
+        Dictionary with "nodes" and "edges" keys containing selected element IDs
     """
 
-    default = {"nodes": [], "edges": []}
-    for e in elements:
-        if "selected" in e:
-            if e["selected"] and "data" in e and "id" in e["data"]:
-                if "source" in e["data"]:
-                    default["edges"].append(e["data"]["id"])
-                else:
-                    default["nodes"].append(e["data"]["id"])
+    # Set default layout if not provided
+    if layout is None:
+        layout = {"name": "fcose", "animationDuration": 0}
 
-    component_value = _component_func(
+    # Validate selection_type parameter
+    if selection_type not in ("single", "additive"):
+        raise ValueError("selection_type must be 'single' or 'additive'")
+
+    # Extract pre-selected elements efficiently
+    selected_nodes = [
+        e["data"]["id"]
+        for e in elements
+        if e.get("selected")
+        and e.get("data", {}).get("id")
+        and "source" not in e.get("data", {})
+    ]
+    selected_edges = [
+        e["data"]["id"]
+        for e in elements
+        if e.get("selected")
+        and e.get("data", {}).get("id")
+        and "source" in e.get("data", {})
+    ]
+
+    default = {"nodes": selected_nodes, "edges": selected_edges}
+
+    return _component_func(
         elements=elements,
         stylesheet=stylesheet,
         width=width,
@@ -87,4 +88,3 @@ def cytoscape(
         key=key,
         default=default,
     )
-    return component_value

@@ -6,6 +6,7 @@ export default defineConfig({
   plugins: [react()],
   root: "./",
   publicDir: "public",
+  base: "./", // Use relative paths for Streamlit component serving
   server: {
     port: 3001,
     host: "localhost",
@@ -22,9 +23,10 @@ export default defineConfig({
         },
       },
     },
+    // Copy public folder to build root for Streamlit compatibility
+    copyPublicDir: true,
   },
   define: {
     global: "globalThis",
   },
 })
-
